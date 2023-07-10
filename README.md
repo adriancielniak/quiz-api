@@ -51,14 +51,20 @@ Nest is [MIT licensed](LICENSE).
 npm install typeorm @nestjs/typeorm --save
 ```
 
-# Install Dotenv
+## Install Dotenv
 
 ```bash
 npm i dotenv
 ```
 
-# Install pg
+## Install pg
 
 ```bash
 npm install pg --sav
+```
+
+## install graphQL 
+
+```bash
+npm i @nestjs/graphql @nestjs/apollo @apollo/server graphql
 ```

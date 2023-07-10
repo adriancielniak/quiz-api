@@ -23,7 +23,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       password: '12345',
       database: 'postgres',
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
     }),
     QuizModule,
     QuestionModule,

@@ -1,7 +1,11 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
+import { CreateQuestionInput } from 'src/question/dto/create-question.input';
 
 @InputType()
 export class CreateQuizInput {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
+  @Field(() => String)
+  title: string
+
+  @Field(() => [CreateQuestionInput])
+  questions: CreateQuestionInput[];
 }

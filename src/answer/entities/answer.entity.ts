@@ -19,9 +19,9 @@ export class Answer {
 
     @Field(() => Int)
     @Column({type: "int", nullable: true})
-    priority: number
+    priority?: number
 
     @Field(() => Boolean)
     @Column({type: "boolean", nullable: true})
-    is_correct: boolean
+    is_correct?: boolean
 }

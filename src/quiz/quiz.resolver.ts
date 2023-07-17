@@ -6,30 +6,5 @@ import { UpdateQuizInput } from './dto/update-quiz.input';
 
 @Resolver(() => Quiz)
 export class QuizResolver {
-  constructor(private readonly quizService: QuizService) {}
-
-  @Mutation(() => Quiz)
-  createQuiz(@Args('createQuizInput') createQuizInput: CreateQuizInput) {
-    return this.quizService.create(createQuizInput);
-  }
-
-  @Query(() => [Quiz], { name: 'quiz' })
-  findAll() {
-    return this.quizService.findAll();
-  }
-
-  @Query(() => Quiz, { name: 'quiz' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.quizService.findOne(id);
-  }
-
-  @Mutation(() => Quiz)
-  updateQuiz(@Args('updateQuizInput') updateQuizInput: UpdateQuizInput) {
-    return this.quizService.update(updateQuizInput.id, updateQuizInput);
-  }
-
-  @Mutation(() => Quiz)
-  removeQuiz(@Args('id', { type: () => Int }) id: number) {
-    return this.quizService.remove(id);
-  }
+  
 }

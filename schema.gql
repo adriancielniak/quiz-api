@@ -25,52 +25,5 @@ type Quiz {
 }
 
 type Query {
-  quiz(id: Int!): Quiz!
-  question(id: Int!): Question!
-  answer(id: Int!): Answer!
-}
-
-type Mutation {
-  createQuiz(createQuizInput: CreateQuizInput!): Quiz!
-  updateQuiz(updateQuizInput: UpdateQuizInput!): Quiz!
-  removeQuiz(id: Int!): Quiz!
-  createQuestion(createQuestionInput: CreateQuestionInput!): Question!
-  updateQuestion(updateQuestionInput: UpdateQuestionInput!): Question!
-  removeQuestion(id: Int!): Question!
-  createAnswer(createAnswerInput: CreateAnswerInput!): Answer!
-  updateAnswer(updateAnswerInput: UpdateAnswerInput!): Answer!
-  removeAnswer(id: Int!): Answer!
-}
-
-input CreateQuizInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
-input UpdateQuizInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
-}
-
-input CreateQuestionInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
-input UpdateQuestionInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
-}
-
-input CreateAnswerInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
-input UpdateAnswerInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  sayHello: String!
 }

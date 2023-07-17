@@ -1,26 +1,36 @@
 import { Injectable } from '@nestjs/common';
-import { CreateQuizInput } from './dto/create-quiz.input';
-import { UpdateQuizInput } from './dto/update-quiz.input';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Quiz } from './entities/quiz.entity';
+import { Repository } from 'typeorm';
+import { Question } from 'src/question/entities/question.entity';
+import { QuestionService } from 'src/question/question.service';
 
 @Injectable()
 export class QuizService {
-  create(createQuizInput: CreateQuizInput) {
-    return 'This action adds a new quiz';
-  }
+    constructor(
+        @InjectRepository(Quiz)
+        private readonly quizRepository: Repository<Quiz>,
+        private readonly questionService: QuestionService,
+      ) {}
+    
+    async createQuiz(title: string, questions: { question_content: string, question_type: string, answers:
+    { answer_content: string, is_correct?: boolean, priority?: number }[] }[]): Promise <Quiz>{
+        const quiz = this.quizRepository.create({title});
+        const savedQuiz = await this.quizRepository.save(quiz);
 
-  findAll() {
-    return `This action returns all quiz`;
-  }
+        for(const temp_question of questions){
+            await this.questionService.createQuestion
+            (savedQuiz.id, temp_question.question_content, temp_question.question_type, temp_question.answers);
+        }
 
-  findOne(id: number) {
-    return `This action returns a #${id} quiz`;
-  }
+        return savedQuiz;
+    }
 
-  update(id: number, updateQuizInput: UpdateQuizInput) {
-    return `This action updates a #${id} quiz`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} quiz`;
-  }
+    async getAllQuizzes(): Promise<Quiz[]> {
+        return this.quizRepository.find();
+      }
+    
+    async getQuestionsForQuiz(quizId: number): Promise<Question[]> {
+        return this.questionService.getQuestions(quizId);
+    }
 }

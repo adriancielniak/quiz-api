@@ -1,26 +1,35 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAnswerInput } from './dto/create-answer.input';
-import { UpdateAnswerInput } from './dto/update-answer.input';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Answer } from './entities/answer.entity';
+import { DeepPartial } from 'typeorm';
 
 @Injectable()
 export class AnswerService {
-  create(createAnswerInput: CreateAnswerInput) {
-    return 'This action adds a new answer';
+  constructor(
+    @InjectRepository(Answer)
+    private readonly answerRepository: Repository<Answer>,
+  ){}
+
+  async createAnswer(questionId: number, answer_content: string, is_correct?: boolean, priority?: number): Promise <Answer>{
+    const answer: DeepPartial<Answer> = {
+      answer_content,
+      is_correct,
+      priority,
+    };
+
+    const savedAnswer = await this.answerRepository.save(answer);
+
+    await this.answerRepository
+      .createQueryBuilder()
+      .relation(Answer, 'question')
+      .of(savedAnswer.id)
+      .set(questionId);
+
+    return savedAnswer;
   }
 
-  findAll() {
-    return `This action returns all answer`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} answer`;
-  }
-
-  update(id: number, updateAnswerInput: UpdateAnswerInput) {
-    return `This action updates a #${id} answer`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} answer`;
+  async getAnswers(questionId: number): Promise <Answer[]>{
+      return this.answerRepository.find({where:{ question: { id: questionId } }})
   }
 }

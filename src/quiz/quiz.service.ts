@@ -4,6 +4,8 @@ import { Quiz } from './entities/quiz.entity';
 import { Repository } from 'typeorm';
 import { Question } from 'src/question/entities/question.entity';
 import { QuestionService } from 'src/question/question.service';
+import { CreateQuizInput } from './dto/create-quiz.input';
+import { CreateQuestionInput } from 'src/question/dto/create-question.input';
 
 @Injectable()
 export class QuizService {
@@ -13,14 +15,17 @@ export class QuizService {
         private readonly questionService: QuestionService,
       ) {}
     
-    async createQuiz(title: string, questions: { question_content: string, question_type: string, answers:
-    { answer_content: string, is_correct?: boolean, priority?: number }[] }[]): Promise <Quiz>{
+    
+    async createQuiz(createQuizInput: CreateQuizInput): Promise <Quiz>{
+        const {title, questions} = createQuizInput;
+
         const quiz = this.quizRepository.create({title});
         const savedQuiz = await this.quizRepository.save(quiz);
 
-        for(const temp_question of questions){
-            await this.questionService.createQuestion
-            (savedQuiz.id, temp_question.question_content, temp_question.question_type, temp_question.answers);
+        for(const questionInput of questions){ 
+            
+            const question: CreateQuestionInput = { ...questionInput, quiz_id: savedQuiz.id };
+            await this.questionService.createQuestion(question);
         }
 
         return savedQuiz;
@@ -28,7 +33,7 @@ export class QuizService {
 
     async getAllQuizzes(): Promise<Quiz[]> {
         return this.quizRepository.find();
-      }
+    }
     
     async getQuestionsForQuiz(quizId: number): Promise<Question[]> {
         return this.questionService.getQuestions(quizId);

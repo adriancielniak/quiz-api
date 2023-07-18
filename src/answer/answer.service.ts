@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Answer } from './entities/answer.entity';
 import { DeepPartial } from 'typeorm';
+import { CreateAnswerInput } from './dto/create-answer.input';
 
 @Injectable()
 export class AnswerService {
@@ -11,20 +12,17 @@ export class AnswerService {
     private readonly answerRepository: Repository<Answer>,
   ){}
 
-  async createAnswer(questionId: number, answer_content: string, is_correct?: boolean, priority?: number): Promise <Answer>{
+  async createAnswer(createAnswerInput: CreateAnswerInput): Promise <Answer>{
+    const {question_id, answer_content, is_correct, priority } = createAnswerInput;
+
     const answer: DeepPartial<Answer> = {
+      question: {id: question_id},
       answer_content,
       is_correct,
       priority,
     };
 
     const savedAnswer = await this.answerRepository.save(answer);
-
-    await this.answerRepository
-      .createQueryBuilder()
-      .relation(Answer, 'question')
-      .of(savedAnswer.id)
-      .set(questionId);
 
     return savedAnswer;
   }

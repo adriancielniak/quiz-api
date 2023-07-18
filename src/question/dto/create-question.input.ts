@@ -3,6 +3,9 @@ import { CreateAnswerInput } from 'src/answer/dto/create-answer.input';
 
 @InputType()
 export class CreateQuestionInput {
+  @Field(() => Int)
+  quiz_id: number
+
   @Field(() => String)
   question_type: string
 
@@ -10,5 +13,5 @@ export class CreateQuestionInput {
   question_content: string
 
   @Field(() => [CreateAnswerInput])
-  questions: CreateQuestionInput[];
+  answers: CreateAnswerInput[];
 }

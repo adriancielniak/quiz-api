@@ -2,6 +2,9 @@ import { InputType, Int, Field } from '@nestjs/graphql';
 
 @InputType()
 export class CreateAnswerInput {
+  @Field(() => Int)
+  question_id: number
+
   @Field(() => String)
   answer_content: string
 

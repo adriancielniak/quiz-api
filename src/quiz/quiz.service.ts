@@ -21,12 +21,13 @@ export class QuizService {
 
         const quiz = this.quizRepository.create({title});
         const savedQuiz = await this.quizRepository.save(quiz);
+        savedQuiz.questions = [];
 
-        for(const questionInput of questions){ 
-            
-            const question: CreateQuestionInput = { ...questionInput, quiz_id: savedQuiz.id };
-            await this.questionService.createQuestion(question);
+        for(const question of questions){ 
+            const savedQuestion = await this.questionService.createQuestion(savedQuiz.id, question);
+            savedQuiz.questions.push(savedQuestion);
         }
+        await this.quizRepository.save(savedQuiz);
 
         return savedQuiz;
     }

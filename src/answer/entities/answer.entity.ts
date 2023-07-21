@@ -7,7 +7,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 export class Answer {
     @Field(() => Int)
     @PrimaryGeneratedColumn()
-    id: number;
+    id: number
 
     @Field(() => Question)
     @ManyToOne(() => Question, (question) => question.answers)

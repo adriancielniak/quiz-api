@@ -15,14 +15,14 @@ export class Question {
     quiz: Quiz
 
     @Field(() => String)
-    @Column({type: "character", length: 1 , nullable: false})
+    @Column({type: "varchar", nullable: false})
     question_type: string
 
     @Field(() => String)
     @Column({type: "varchar", nullable: false})
     question_content: string
 
-    @Field(() => [Answer!])
+    @Field(() => [Answer])
     @OneToMany(() => Answer, (answer) => answer.question)
     answers: Answer[]
 }

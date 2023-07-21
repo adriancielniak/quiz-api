@@ -12,8 +12,8 @@ export class AnswerService {
     private readonly answerRepository: Repository<Answer>,
   ){}
 
-  async createAnswer(createAnswerInput: CreateAnswerInput): Promise <Answer>{
-    const {question_id, answer_content, is_correct, priority } = createAnswerInput;
+  async createAnswer(question_id: number, createAnswerInput: CreateAnswerInput): Promise <Answer>{
+    const { answer_content, is_correct, priority } = createAnswerInput;
 
     const answer: DeepPartial<Answer> = {
       question: {id: question_id},
@@ -28,6 +28,6 @@ export class AnswerService {
   }
 
   async getAnswers(questionId: number): Promise <Answer[]>{
-      return this.answerRepository.find({where:{ question: { id: questionId } }})
+      return this.answerRepository.find({where:{ question: {id: questionId }}})
   }
 }

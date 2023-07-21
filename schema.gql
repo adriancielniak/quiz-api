@@ -25,5 +25,28 @@ type Quiz {
 }
 
 type Query {
+  findAllQuizzes: [Quiz!]!
+  findAllQuestions: [Question!]!
   sayHello: String!
+}
+
+type Mutation {
+  createQuiz(createQuizInput: CreateQuizInput!): Quiz!
+}
+
+input CreateQuizInput {
+  title: String!
+  questions: [CreateQuestionInput!]!
+}
+
+input CreateQuestionInput {
+  question_type: String!
+  question_content: String!
+  answers: [CreateAnswerInput!]!
+}
+
+input CreateAnswerInput {
+  answer_content: String!
+  priority: Int
+  is_correct: Boolean
 }

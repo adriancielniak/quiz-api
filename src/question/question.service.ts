@@ -14,23 +14,16 @@ export class QuestionService{
     private readonly answerService: AnswerService,
   ){}
 
-  async createQuestion(createQuestionInput: CreateQuestionInput): Promise<Question>{
-    const {quiz_id, question_type, question_content, answers} = createQuestionInput;
+  async createQuestion(quiz_id: number, createQuestionInput: CreateQuestionInput): Promise<Question>{
+    const {question_type, question_content, answers} = createQuestionInput;
 
-    const question: DeepPartial<Question> = {
-      quiz: {id: quiz_id},
-      question_content,
-      question_type
-    }
-
+    const question = this.questionRepository.create({question_type, question_content});
     const savedQuestion = await this.questionRepository.save(question);
+    savedQuestion.answers = [];
 
-    for (const answerInput of answers) {
-      const answer: CreateAnswerInput = {
-        ...answerInput,
-        question_id: savedQuestion.id, 
-      };
-      await this.answerService.createAnswer(answer);
+    for (const answer of answers) {
+      const savedAnswer = await this.answerService.createAnswer(savedQuestion.id, answer);
+      savedQuestion.answers.push(savedAnswer)
     }
 
     return savedQuestion;
@@ -39,4 +32,8 @@ export class QuestionService{
   async getQuestions(quiz_id: number): Promise <Question[]>{
       return this.questionRepository.find({where: {quiz: {id: quiz_id}}});
   }
+
+  async getAllQuizzes(): Promise<Question[]> {
+    return this.questionRepository.find();
+}
 }

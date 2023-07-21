@@ -13,7 +13,7 @@ export class Quiz {
     @Column({ type: "varchar", nullable: false })
     title: string
 
-    @Field(() => [Question!])
+    @Field(() => [Question])
     @OneToMany(() => Question, (question) => question.quiz)
     questions: Question[]
 }

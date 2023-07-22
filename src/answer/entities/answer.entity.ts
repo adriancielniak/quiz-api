@@ -17,11 +17,11 @@ export class Answer {
     @Column({type: "varchar", nullable: false})
     answer_content: string
 
-    @Field(() => Int)
+    @Field(() => Int, {nullable: true})
     @Column({type: "int", nullable: true})
     priority?: number
 
-    @Field(() => Boolean)
+    @Field(() => Boolean, {nullable: true})
     @Column({type: "boolean", nullable: true})
     is_correct?: boolean
 }

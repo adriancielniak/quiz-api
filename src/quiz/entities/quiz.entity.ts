@@ -14,6 +14,6 @@ export class Quiz {
     title: string
 
     @Field(() => [Question])
-    @OneToMany(() => Question, (question) => question.quiz)
+    @OneToMany(() => Question, (question) => question.quiz, { eager: true })
     questions: Question[]
 }

@@ -23,6 +23,6 @@ export class Question {
     question_content: string
 
     @Field(() => [Answer])
-    @OneToMany(() => Answer, (answer) => answer.question)
+    @OneToMany(() => Answer, (answer) => answer.question, { eager: true })
     answers: Answer[]
 }

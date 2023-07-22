@@ -2,10 +2,13 @@ import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { QuizService } from './quiz.service';
 import { Quiz } from './entities/quiz.entity';
 import { CreateQuizInput } from './dto/create-quiz.input';
+import { Question } from 'src/question/entities/question.entity';
 
 @Resolver(() => Quiz)
 export class QuizResolver {
-    constructor(private readonly quizService: QuizService) {}
+    constructor(
+        private readonly quizService: QuizService
+        ) {}
 
     @Mutation(() => Quiz)
     createQuiz(@Args('createQuizInput') createQuizInput: CreateQuizInput){
@@ -14,6 +17,6 @@ export class QuizResolver {
 
     @Query(() => [Quiz], { name: 'findAllQuizzes' })
     async findAllQuizzes() {
-    return this.quizService.getAllQuizzes();
+        return this.quizService.getAllQuizzes();
     }
 }

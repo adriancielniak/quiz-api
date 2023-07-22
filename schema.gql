@@ -6,8 +6,8 @@ type Answer {
   id: Int!
   question: Question!
   answer_content: String!
-  priority: Int!
-  is_correct: Boolean!
+  priority: Int
+  is_correct: Boolean
 }
 
 type Question {
@@ -27,6 +27,7 @@ type Quiz {
 type Query {
   findAllQuizzes: [Quiz!]!
   findAllQuestions: [Question!]!
+  findQuizQuestions(quiz_id: Int!): [Question!]!
   sayHello: String!
 }
 

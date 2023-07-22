@@ -35,8 +35,4 @@ export class QuizService {
     async getAllQuizzes(): Promise<Quiz[]> {
         return this.quizRepository.find();
     }
-    
-    async getQuestionsForQuiz(quizId: number): Promise<Question[]> {
-        return this.questionService.getQuestions(quizId);
-    }
 }

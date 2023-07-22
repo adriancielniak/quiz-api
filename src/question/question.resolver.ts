@@ -8,6 +8,12 @@ export class QuestionResolver {
 
     @Query(() => [Question], { name: 'findAllQuestions' })
     async findAllQuestions() {
-    return this.questionService.getAllQuizzes();
+    return this.questionService.getAllQuestions();
     }
+
+
+    @Query(() => [Question], { name: "findQuizQuestions" })
+        async findQuizQuestions(@Args('quiz_id', { type: () => Int }) quiz_id: number) {
+        return this.questionService.findQuizQuestions(quiz_id);
+}
 }

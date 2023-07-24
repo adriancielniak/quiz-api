@@ -18,7 +18,7 @@ export class checkQuestionInput{
   @Field(() => Int)
   question_id: number;
 
-  @Field(() => Int, {nullable: true})
+  @Field(() => [Int], {nullable: true})
   answer_ids?: number [];
 
   @Field(() => String, {nullable: true})

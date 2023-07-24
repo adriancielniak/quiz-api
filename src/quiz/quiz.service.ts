@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Quiz } from './entities/quiz.entity';
+import { Quiz, QuizResult } from './entities/quiz.entity';
 import { Repository } from 'typeorm';
 import { Question } from 'src/question/entities/question.entity';
 import { QuestionService } from 'src/question/question.service';
 import { CreateQuizInput } from './dto/create-quiz.input';
-import { CreateQuestionInput } from 'src/question/dto/create-question.input';
+import { checkQuestionInput, CreateQuestionInput } from 'src/question/dto/create-question.input';
 
 @Injectable()
 export class QuizService {
@@ -30,6 +30,22 @@ export class QuizService {
         await this.quizRepository.save(savedQuiz);
 
         return savedQuiz;
+    }
+
+    async findQuiz(quiz_id: number): Promise<Quiz> {
+        
+        const quiz = await this.quizRepository
+          .createQueryBuilder('quiz')
+          .leftJoinAndSelect('quiz.questions', 'question')
+          .leftJoinAndSelect('question.answers', 'answer')
+          .where('quiz.id = :id', { id: quiz_id })
+          .getOne();
+      
+        if (!quiz) {
+          throw new Error('Quiz not found');
+        }
+      
+        return quiz;
     }
 
     async getAllQuizzes(): Promise<Quiz[]> {

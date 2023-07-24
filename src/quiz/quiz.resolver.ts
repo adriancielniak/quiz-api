@@ -16,7 +16,12 @@ export class QuizResolver {
     }
 
     @Query(() => [Quiz], { name: 'findAllQuizzes' })
-    async findAllQuizzes() {
-        return this.quizService.getAllQuizzes();
+        async findAllQuizzes() {
+            return this.quizService.getAllQuizzes();
     }
+
+    @Query(() => Quiz, { name: 'findQuiz' })
+        async findQuiz(@Args('quiz_id', { type: () => Int }) quiz_id: number) {
+            return this.quizService.findQuiz(quiz_id);
+  }
 }

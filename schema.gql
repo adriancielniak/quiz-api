@@ -36,6 +36,7 @@ type Quiz {
 
 type Query {
   findAllQuizzes: [Quiz!]!
+  findQuiz(quiz_id: Int!): Quiz!
   findAllQuestions: [Question!]!
   findQuizQuestions(quiz_id: Int!): [Question!]!
   findFullQuestions(quiz_id: Int!): [Question!]!

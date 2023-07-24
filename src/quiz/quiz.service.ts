@@ -6,7 +6,7 @@ import { Question, QuestionResult } from 'src/question/entities/question.entity'
 import { QuestionService } from 'src/question/question.service';
 import { CreateQuizInput } from './dto/create-quiz.input';
 import { checkQuestionInput, CreateQuestionInput } from 'src/question/dto/create-question.input';
-import { _ } from "lodash"
+//import { _ } from "lodash"
 
 function checkType1(student_answer: checkQuestionInput, question: Question): boolean{
     const correct_answer = question.answers.find((answer) => answer.is_correct);
@@ -29,9 +29,11 @@ function checkType3(student_answer: checkQuestionInput, question: Question): boo
     );
 }
 
+//TO DO DOKONCZZENIA
 function checkType4(student_answer: checkQuestionInput, question: Question): boolean{
     const correct_text_answer = question.answers[0].answer_content;
-    return _.toLower(student_answer.textAnswer).replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '') === _.toLower(correct_text_answer).replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
+    return student_answer.textAnswer.toLowerCase() === correct_text_answer.toLowerCase();
+    //return _.toLower(student_answer.textAnswer).replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '') === _.toLower(correct_text_answer).replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
 }
 
 @Injectable()

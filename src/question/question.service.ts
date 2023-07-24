@@ -38,6 +38,20 @@ export class QuestionService{
       return this.questionRepository.find({where: {quiz: {id: quiz_id}}});
   }
 
+  async findFullQuestions(quiz_id: number): Promise <Question[]>{
+    const questions = await this.questionRepository.find({where: {quiz: {id: quiz_id}}});
+
+    for(const question of questions){
+      if(question.question_type === "TYPE_4"){
+        question.answers = [];
+      }else{
+        question.answers = await this.answerService.getAnswers(question.id);
+      }
+    }
+
+    return questions;
+  }
+
   async getAllQuestions(): Promise<Question[]> {
     return this.questionRepository.find();
 }

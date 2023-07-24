@@ -7,13 +7,19 @@ export class QuestionResolver {
     constructor(private readonly questionService: QuestionService) {}
 
     @Query(() => [Question], { name: 'findAllQuestions' })
-    async findAllQuestions() {
-    return this.questionService.getAllQuestions();
+        async findAllQuestions() {
+        return this.questionService.getAllQuestions();
     }
 
 
     @Query(() => [Question], { name: "findQuizQuestions" })
         async findQuizQuestions(@Args('quiz_id', { type: () => Int }) quiz_id: number) {
         return this.questionService.findQuizQuestions(quiz_id);
-}
+    }
+    
+    @Query(() => [Question], {name: "findFullQuestions"})
+    async findFullQuestions(@Args('quiz_id', {type: () => Int}) quiz_id: number){
+        return this.questionService.findFullQuestions(quiz_id);
+    }
+
 }

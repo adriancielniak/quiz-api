@@ -28,6 +28,7 @@ type Query {
   findAllQuizzes: [Quiz!]!
   findAllQuestions: [Question!]!
   findQuizQuestions(quiz_id: Int!): [Question!]!
+  findFullQuestions(quiz_id: Int!): [Question!]!
   sayHello: String!
 }
 

@@ -1,5 +1,5 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { Question } from 'src/question/entities/question.entity';
+import { ObjectType, Field, Int, Float } from '@nestjs/graphql';
+import { Question, QuestionResult } from 'src/question/entities/question.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -7,13 +7,31 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 export class Quiz {
     @Field(() => Int)
     @PrimaryGeneratedColumn()
-    id: number
+    id: number;
 
     @Field(() => String)
     @Column({ type: "varchar", nullable: false })
-    title: string
+    title: string;
 
     @Field(() => [Question])
     @OneToMany(() => Question, (question) => question.quiz, { eager: true })
-    questions: Question[]
+    questions: Question[];
+}
+
+@ObjectType()
+export class QuizResult{
+    @Field(() => Int)
+    quiz_id: number;
+
+    @Field(() => [QuestionResult])
+    questions: QuestionResult[];
+
+    @Field(() => Int)
+    result: number;
+
+    @Field(() => Int)
+    maxResult: number;
+
+    @Field(() => Int)
+    perecentage_points: number;
 }

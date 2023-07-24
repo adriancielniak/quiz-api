@@ -12,3 +12,15 @@ export class CreateQuestionInput {
   @Field(() => [CreateAnswerInput])
   answers: CreateAnswerInput[];
 }
+
+@InputType()
+export class checkQuestionInput{
+  @Field(() => Int)
+  question_id: number;
+
+  @Field(() => Int, {nullable: true})
+  answer_ids?: number [];
+
+  @Field(() => String, {nullable: true})
+  textAnswer?: string;
+}

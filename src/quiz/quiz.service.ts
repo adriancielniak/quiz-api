@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Quiz, QuizResult } from './entities/quiz.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Question, QuestionResult } from 'src/question/entities/question.entity';
 import { QuestionService } from 'src/question/question.service';
 import { CreateQuizInput } from './dto/create-quiz.input';
@@ -42,23 +42,40 @@ export class QuizService {
         @InjectRepository(Quiz)
         private readonly quizRepository: Repository<Quiz>,
         private readonly questionService: QuestionService,
+        private dataSource: DataSource
       ) {}
     
     
     async createQuiz(createQuizInput: CreateQuizInput): Promise <Quiz>{
         const {title, questions} = createQuizInput;
 
-        const quiz = this.quizRepository.create({title});
-        const savedQuiz = await this.quizRepository.save(quiz);
-        savedQuiz.questions = [];
+        const queryRunner = this.dataSource.createQueryRunner();
 
-        for(const question of questions){ 
-            const savedQuestion = await this.questionService.createQuestion(savedQuiz.id, question);
-            savedQuiz.questions.push(savedQuestion);
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try{
+
+            const quiz = this.quizRepository.create({title});
+            const savedQuiz = await this.quizRepository.save(quiz);
+            savedQuiz.questions = [];
+
+            for(const question of questions){ 
+               const savedQuestion = await this.questionService.createQuestion(savedQuiz.id, question);
+               savedQuiz.questions.push(savedQuestion);
+            }
+            await this.quizRepository.save(savedQuiz);
+
+            await queryRunner.commitTransaction();
+            return savedQuiz;
         }
-        await this.quizRepository.save(savedQuiz);
-
-        return savedQuiz;
+        catch(err){
+            await queryRunner.rollbackTransaction();
+            throw new Error(err)
+        }
+        finally{
+            await queryRunner.release();
+        }
     }
 
     async checkAnswers(quiz_id: number, student_answers: checkQuestionInput []): Promise <QuizResult>{

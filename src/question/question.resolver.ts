@@ -6,19 +6,18 @@ import { Question } from './entities/question.entity';
 export class QuestionResolver {
     constructor(private readonly questionService: QuestionService) {}
 
-    @Query(() => [Question], { name: 'findAllQuestions' })
-        async findAllQuestions() {
+    @Query(() => [Question], { name: 'getAllQuestions'})
+        async getAllQuestions() {
         return this.questionService.getAllQuestions();
     }
 
-
     @Query(() => [Question], { name: "findQuizQuestions" })
-        async findQuizQuestions(@Args('quiz_id', { type: () => Int }) quiz_id: number) {
+        async findQuizQuestions(@Args('quiz_id', {type: () => Int}) quiz_id: number) {
         return this.questionService.findQuizQuestions(quiz_id);
     }
     
     @Query(() => [Question], {name: "findFullQuestions"})
-    async findFullQuestions(@Args('quiz_id', {type: () => Int}) quiz_id: number){
+        async findFullQuestions(@Args('quiz_id', {type: () => Int}) quiz_id: number){
         return this.questionService.findFullQuestions(quiz_id);
     }
 

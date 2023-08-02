@@ -9,27 +9,28 @@ import { checkQuestionInput } from 'src/question/dto/create-question.input';
 export class QuizResolver {
     constructor(
         private readonly quizService: QuizService
-        ) {}
+    ) { }
 
     @Mutation(() => Quiz)
-    createQuiz(@Args('createQuizInput') createQuizInput: CreateQuizInput){
+    createQuiz(@Args('createQuizInput') createQuizInput: CreateQuizInput) {
         return this.quizService.createQuiz(createQuizInput)
     }
 
     @Query(() => [Quiz], { name: 'findAllQuizzes' })
-        async findAllQuizzes() {
-            return this.quizService.getAllQuizzes();
+    async findAllQuizzes() {
+        return this.quizService.findAllQuizzes();
     }
 
     @Query(() => Quiz, { name: 'findQuiz' })
-        async findQuiz(@Args('quiz_id', { type: () => Int }) quiz_id: number) {
-            return this.quizService.findQuiz(quiz_id);
+    async findQuiz(@Args('quiz_id', { type: () => Int }) quiz_id: number) {
+        return this.quizService.findQuiz(quiz_id);
     }
 
     @Query(() => QuizResult)
     async checkAnswers(
-        @Args('quiz_id', {type: () => Int}) quiz_id: number,
-        @Args('student_answers', {type: () => [checkQuestionInput]}) student_answers: checkQuestionInput []
-    ): Promise <QuizResult>{
-            return this.quizService.checkAnswers(quiz_id, student_answers);
-        }}
+        @Args('quiz_id', { type: () => Int }) quiz_id: number,
+        @Args('student_answers', { type: () => [checkQuestionInput] }) student_answers: checkQuestionInput[]
+    ): Promise<QuizResult> {
+        return this.quizService.checkAnswers(quiz_id, student_answers);
+    }
+}

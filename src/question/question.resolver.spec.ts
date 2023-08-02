@@ -72,8 +72,13 @@ describe('QuestionResolver', () => {
       expect(result).toEqual(questionsTemplate);
     })
   })
-});
 
-//getAllQuestions
-//findQuizQuestions
-//findFullQuestions
+  describe('findFullQuestions', () => {
+    it('should return full information about questions', async () =>{
+      jest.spyOn(questionService, 'findFullQuestions').mockResolvedValue(questionsTemplate);
+
+      const result = await resolver.findFullQuestions(1);
+      expect(result).toEqual(questionsTemplate);
+    })
+  })
+});

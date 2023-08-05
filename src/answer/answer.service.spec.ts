@@ -47,13 +47,7 @@ describe('AnswerService', () => {
         answer_content: "content",
         priority: 1,
         is_correct: null,
-        question: {
-          id: question_id,
-          quiz: undefined,
-          answers: [],
-          question_type: '',
-          question_content: '',
-        }
+        question: null
       } 
 
       jest.spyOn(answerRepository, 'save').mockResolvedValueOnce(answer_result);
@@ -109,16 +103,11 @@ describe('AnswerService', () => {
       answer_content: "content 2",
       priority: null,
       is_correct: true,
-      question: {
-        id: 1,
-        quiz: undefined,
-        answers: [],
-        question_type: '',
-        question_content: '',
-      }
+      question: null
     }
 
     it('should return two answers', async () => {
+
       jest.spyOn(answerRepository, 'find').mockResolvedValueOnce([firstAnswer, secondAnswer])
 
       expect(await service.getAnswers(1)).toEqual(expect.arrayContaining([firstAnswer, secondAnswer]))

@@ -8,34 +8,6 @@ import { CreateQuizInput } from './dto/create-quiz.input';
 import { checkQuestionInput, CreateQuestionInput } from 'src/question/dto/create-question.input';
 //import { _ } from "lodash"
 
-function checkType1(student_answer: checkQuestionInput, question: Question): boolean{
-    const correct_answer = question.answers.find((answer) => answer.is_correct);
-    return !!correct_answer && correct_answer.id === student_answer.answer_ids[0];
-}
-
-function checkType2(student_answer: checkQuestionInput, question: Question): boolean{
-    const correct_answer_ids = question.answers.filter((answer) => answer.is_correct).map((answer) => answer.id);
-    return (
-        student_answer.answer_ids.length === correct_answer_ids.length &&
-        student_answer.answer_ids.every((answer_id) => correct_answer_ids.includes(answer_id))
-    );
-}
-
-function checkType3(student_answer: checkQuestionInput, question: Question): boolean{
-    const correct_answer_ids = question.answers.sort((first, second) => first.priority - second.priority).map((answer) => answer.id);
-    return (
-        student_answer.answer_ids.length === correct_answer_ids.length &&
-        student_answer.answer_ids.every((answer_id, index) => answer_id === correct_answer_ids[index])
-    );
-}
-
-//TO DO DOKONCZZENIA
-function checkType4(student_answer: checkQuestionInput, question: Question): boolean{
-    const correct_text_answer = question.answers[0].answer_content;
-    return student_answer.textAnswer.toLowerCase() === correct_text_answer.toLowerCase();
-    //return _.toLower(student_answer.textAnswer).replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '') === _.toLower(correct_text_answer).replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
-}
-
 @Injectable()
 export class QuizService {
     constructor(
@@ -56,6 +28,7 @@ export class QuizService {
 
         try{
 
+            
             const quiz = this.quizRepository.create({title});
             const savedQuiz = await this.quizRepository.save(quiz);
             savedQuiz.questions = [];
@@ -64,7 +37,7 @@ export class QuizService {
                const savedQuestion = await this.questionService.createQuestion(savedQuiz.id, question);
                savedQuiz.questions.push(savedQuestion);
             }
-            await this.quizRepository.save(savedQuiz);
+            //await this.quizRepository.save(savedQuiz);
 
             await queryRunner.commitTransaction();
             return savedQuiz;
@@ -76,6 +49,33 @@ export class QuizService {
         finally{
             await queryRunner.release();
         }
+    }
+
+    async checkType1(student_answer: checkQuestionInput, question: Question): Promise <boolean>{
+        const correct_answer = question.answers.find((answer) => answer.is_correct);
+        return !!correct_answer && correct_answer.id === student_answer.answer_ids[0];
+    }
+
+    async checkType2(student_answer: checkQuestionInput, question: Question): Promise <boolean>{
+        const correct_answer_ids = question.answers.filter((answer) => answer.is_correct).map((answer) => answer.id);
+        return (
+            student_answer.answer_ids.length === correct_answer_ids.length &&
+            student_answer.answer_ids.every((answer_id) => correct_answer_ids.includes(answer_id))
+        );
+    }
+
+    async checkType3(student_answer: checkQuestionInput, question: Question): Promise <boolean>{
+        const correct_answer_ids = question.answers.sort((first, second) => first.priority - second.priority).map((answer) => answer.id);
+        return (
+            student_answer.answer_ids.length === correct_answer_ids.length &&
+            student_answer.answer_ids.every((answer_id, index) => answer_id === correct_answer_ids[index])
+        );
+    }
+
+    async checkType4(student_answer: checkQuestionInput, question: Question): Promise <boolean>{
+        const correct_text_answer = question.answers[0].answer_content;
+        return student_answer.textAnswer.toLowerCase() === correct_text_answer.toLowerCase();
+        //return _.toLower(student_answer.textAnswer).replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '') === _.toLower(correct_text_answer).replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
     }
 
     async checkAnswers(quiz_id: number, student_answers: checkQuestionInput []): Promise <QuizResult>{
@@ -104,7 +104,7 @@ export class QuizService {
                     singleResult.student_answer_ids = student_answer.answer_ids;
                     singleResult.correct_answer_ids = question.answers.filter((answer) => (answer.is_correct)).map((answer) => answer.id);
 
-                    if(checkType1(student_answer, question)){
+                    if(this.checkType1(student_answer, question)){
                         correct_answers++;
                     }
                 }
@@ -113,7 +113,7 @@ export class QuizService {
                     singleResult.student_answer_ids = student_answer.answer_ids;
                     singleResult.correct_answer_ids = question.answers.filter((answer) => (answer.is_correct)).map((answer) => answer.id);
 
-                    if(checkType2(student_answer, question)){
+                    if(this.checkType2(student_answer, question)){
                         correct_answers++;
                     }
                 }
@@ -122,7 +122,7 @@ export class QuizService {
                     singleResult.student_answer_ids = student_answer.answer_ids;
                     singleResult.correct_answer_ids = question.answers.sort((first, second) => first.priority - second.priority).map((answer) => answer.id);
 
-                    if(checkType3(student_answer, question)){
+                    if(this.checkType3(student_answer, question)){
                         correct_answers++;
                     }
                 }
@@ -131,7 +131,7 @@ export class QuizService {
                     singleResult.student_text_answer = student_answer.textAnswer;
                     singleResult.correct_text_answer = question.answers[0].answer_content;
 
-                    if(checkType4(student_answer, question)){
+                    if(this.checkType4(student_answer, question)){
                         correct_answers++;
                     }
                 }
@@ -175,7 +175,7 @@ export class QuizService {
         return quiz;
     }
 
-    async getAllQuizzes(): Promise<Quiz[]> {
+    async findAllQuizzes(): Promise<Quiz[]> {
         return this.quizRepository.find();
     }
 }

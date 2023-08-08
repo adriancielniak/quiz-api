@@ -104,7 +104,7 @@ export class QuizService {
                     singleResult.student_answer_ids = student_answer.answer_ids;
                     singleResult.correct_answer_ids = question.answers.filter((answer) => (answer.is_correct)).map((answer) => answer.id);
 
-                    if(this.checkType1(student_answer, question)){
+                    if(await this.checkType1(student_answer, question)){
                         correct_answers++;
                     }
                 }
@@ -113,7 +113,7 @@ export class QuizService {
                     singleResult.student_answer_ids = student_answer.answer_ids;
                     singleResult.correct_answer_ids = question.answers.filter((answer) => (answer.is_correct)).map((answer) => answer.id);
 
-                    if(this.checkType2(student_answer, question)){
+                    if(await this.checkType2(student_answer, question)){
                         correct_answers++;
                     }
                 }
@@ -122,7 +122,7 @@ export class QuizService {
                     singleResult.student_answer_ids = student_answer.answer_ids;
                     singleResult.correct_answer_ids = question.answers.sort((first, second) => first.priority - second.priority).map((answer) => answer.id);
 
-                    if(this.checkType3(student_answer, question)){
+                    if(await this.checkType3(student_answer, question)){
                         correct_answers++;
                     }
                 }
@@ -131,7 +131,7 @@ export class QuizService {
                     singleResult.student_text_answer = student_answer.textAnswer;
                     singleResult.correct_text_answer = question.answers[0].answer_content;
 
-                    if(this.checkType4(student_answer, question)){
+                    if(await this.checkType4(student_answer, question)){
                         correct_answers++;
                     }
                 }
@@ -140,7 +140,7 @@ export class QuizService {
             }
 
 
-            const percentage = (correct_answers / total_questions) * 100
+            const percentage = Math.round((correct_answers / total_questions) * 100)
 
             const result: QuizResult = {
                 quiz_id: quiz_id,

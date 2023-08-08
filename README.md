@@ -1,21 +1,28 @@
 
-## Installation
+# Quiz API
+
+## Getting Started
+
+- Make sure that you have at leat 3.9 docker version
+
+- Clone the repository and install the necessary dependencies 
 
 ```bash
+$ git clone https://github.com/adriancielniak/quiz-api.git
+
 $ npm install
+ 
+$ ./install-dependencies.sh
 ```
 
 ## Running the app
 
 ```bash
-# development
-$ npm run start
+# run database
+$ dokcer-compose up -d
 
-# watch mode
+# run api
 $ npm run start:dev
-
-# production mode
-$ npm run start:prod
 ```
 
 ## Test

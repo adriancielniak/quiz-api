@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
+import { mock } from 'node:test';
 import { AnswerService } from 'src/answer/answer.service';
 import { Answer } from 'src/answer/entities/answer.entity';
 import { checkQuestionInput } from 'src/question/dto/create-question.input';
@@ -7,12 +8,52 @@ import { Question } from 'src/question/entities/question.entity';
 import { QuestionService } from 'src/question/question.service';
 import { DataSource, Repository } from 'typeorm';
 import { CreateQuizInput } from './dto/create-quiz.input';
-import { Quiz } from './entities/quiz.entity';
+import { Quiz, QuizResult } from './entities/quiz.entity';
 import { QuizModule } from './quiz.module';
 import { QuizService } from './quiz.service';
 
 jest.mock('src/answer/answer.service')
 jest.mock('src/question/question.service')
+
+const mock_quiz: Quiz = {
+  id: 1,
+  title: 'example quiz',
+  questions: [
+    {
+      id: 1,
+      quiz: null,
+      question_type: 'TYPE_1',
+      question_content: 'What is the capital of France?',
+      answers: [
+        { id: 1, answer_content: 'London', question: null, is_correct: false },
+        { id: 2, answer_content: 'Paris', question: null, is_correct: true },
+        { id: 3, answer_content: 'Berlin', question: null, is_correct: false },
+        { id: 4, answer_content: 'Rome', question: null, is_correct: false },
+      ],
+    },
+    {
+      id: 2,
+      quiz: null,
+      question_type: 'TYPE_4',
+      question_content: 'Who wrote the play "Romeo and Juliet"?',
+      answers: [
+        { id: 5, answer_content: 'William Shakespeare', question: null },
+      ],
+    },
+    {
+      id: 3,
+      question_content: 'Who was played with 7?',
+      question_type: 'TYPE_2',
+      quiz: null,
+      answers: [
+        { id: 6, answer_content: 'Cristiano Ronaldo', question: null, is_correct: true },
+        { id: 7, answer_content: 'Lionel Messi', question: null, is_correct: false },
+        { id: 8, answer_content: 'Robert Lewandowski', question: null, is_correct: false },
+        { id: 9, answer_content: 'Kylian Mbappe', question: null, is_correct: true },
+      ]
+    }
+  ]
+}
 
 describe('QuizService', () => {
   let service: QuizService;
@@ -35,15 +76,15 @@ describe('QuizService', () => {
           provide: DataSource,
           useValue: {
             createQueryRunner: jest.fn(() => ({
-                connect: jest.fn(),
-                startTransaction: jest.fn(),
-                commitTransaction: jest.fn(),
-                rollbackTransaction: jest.fn(),
-                release: jest.fn(),
-              })),
+              connect: jest.fn(),
+              startTransaction: jest.fn(),
+              commitTransaction: jest.fn(),
+              rollbackTransaction: jest.fn(),
+              release: jest.fn(),
+            })),
           },
         },
-    ],
+      ],
     }).compile();
 
     answerRepository = module.get<Repository<Answer>>(getRepositoryToken(Answer));
@@ -64,9 +105,9 @@ describe('QuizService', () => {
     expect(quizRepository).toBeDefined();
   });
 
-  describe('createQuiz' , () => {
+  describe('createQuiz', () => {
     it('should create and return new quiz', async () => {
-      
+
       const quiz_input: CreateQuizInput = {
         title: 'title',
         questions: []
@@ -107,15 +148,15 @@ describe('QuizService', () => {
       question_type: 'TYPE_1',
       quiz: null,
       answers: [
-            { id: 1, answer_content: 'Cristiano Ronaldo', question: null, is_correct: true },
-            { id: 2, answer_content: 'Lionel Messi', question: null, is_correct: false },
-            { id: 3, answer_content: 'Robert Lewandowski', question: null, is_correct: false },
-            { id: 4, answer_content: 'Wojciech Szczesny', question: null, is_correct: false },
-      ] 
+        { id: 1, answer_content: 'Cristiano Ronaldo', question: null, is_correct: true },
+        { id: 2, answer_content: 'Lionel Messi', question: null, is_correct: false },
+        { id: 3, answer_content: 'Robert Lewandowski', question: null, is_correct: false },
+        { id: 4, answer_content: 'Wojciech Szczesny', question: null, is_correct: false },
+      ]
     }
 
     const correct_answer: Answer = {
-      id: 1, answer_content: 'Cristiano Ronaldo', question: null, is_correct: true 
+      id: 1, answer_content: 'Cristiano Ronaldo', question: null, is_correct: true
     }
 
     it('should return true, question type 1', async () => {
@@ -152,11 +193,11 @@ describe('QuizService', () => {
       question_type: 'TYPE_2',
       quiz: null,
       answers: [
-            { id: 1, answer_content: 'Cristiano Ronaldo', question: null, is_correct: true },
-            { id: 2, answer_content: 'Lionel Messi', question: null, is_correct: false },
-            { id: 3, answer_content: 'Robert Lewandowski', question: null, is_correct: false },
-            { id: 4, answer_content: 'Kylian Mbappe', question: null, is_correct: true },
-      ] 
+        { id: 1, answer_content: 'Cristiano Ronaldo', question: null, is_correct: true },
+        { id: 2, answer_content: 'Lionel Messi', question: null, is_correct: false },
+        { id: 3, answer_content: 'Robert Lewandowski', question: null, is_correct: false },
+        { id: 4, answer_content: 'Kylian Mbappe', question: null, is_correct: true },
+      ]
     }
 
     //const correct_answer_ids = [1, 4]
@@ -195,11 +236,11 @@ describe('QuizService', () => {
       question_type: 'TYPE_3',
       quiz: null,
       answers: [
-            { id: 1, answer_content: 'Cristiano Ronaldo', question: null, priority: 3},
-            { id: 2, answer_content: 'Lionel Messi', question: null, priority: 2 },
-            { id: 3, answer_content: 'Zbigniew Boniek', question: null, priority: 4 },
-            { id: 4, answer_content: 'Kylian Mbappe', question: null, priority: 1 },
-      ] 
+        { id: 1, answer_content: 'Cristiano Ronaldo', question: null, priority: 3 },
+        { id: 2, answer_content: 'Lionel Messi', question: null, priority: 2 },
+        { id: 3, answer_content: 'Zbigniew Boniek', question: null, priority: 4 },
+        { id: 4, answer_content: 'Kylian Mbappe', question: null, priority: 1 },
+      ]
     }
 
     it('should return true, question type 3', async () => {
@@ -238,8 +279,8 @@ describe('QuizService', () => {
       question_type: 'TYPE_4',
       quiz: null,
       answers: [
-            { id: 1, answer_content: 'France', question: null},
-      ] 
+        { id: 1, answer_content: 'France', question: null },
+      ]
     }
 
     it('should return true, question type 4', async () => {
@@ -255,6 +296,264 @@ describe('QuizService', () => {
     it('should return true, question type 4', async () => {
       const result = await service.checkType4(third_student_answer, question);
       expect(result).toBe(true);
+    })
+  })
+
+  describe('checkFullAnswers', () => {
+    const quiz_id = 1;
+
+    const student_answers: checkQuestionInput[] = [
+      {
+        question_id: 1,
+        answer_ids: [2],
+        textAnswer: null
+      },
+      {
+        question_id: 2,
+        answer_ids: null,
+        textAnswer: 'william shakespeare'
+      },
+      {
+        question_id: 3,
+        answer_ids: [6, 9],
+        textAnswer: null
+      }
+    ]
+
+    const firstQuiz: Quiz = {
+      id: 1,
+      title: 'example quiz',
+      questions: [
+        {
+          id: 1,
+          quiz: null,
+          question_type: 'TYPE_1',
+          question_content: 'What is the capital of France?',
+          answers: [
+            { id: 1, answer_content: 'London', question: null, is_correct: false },
+            { id: 2, answer_content: 'Paris', question: null, is_correct: true },
+            { id: 3, answer_content: 'Berlin', question: null, is_correct: false },
+            { id: 4, answer_content: 'Rome', question: null, is_correct: false },
+          ],
+        },
+        {
+          id: 2,
+          quiz: null,
+          question_type: 'TYPE_4',
+          question_content: 'Who wrote the play "Romeo and Juliet"?',
+          answers: [
+            { id: 5, answer_content: 'William Shakespeare', question: null },
+          ],
+        },
+        {
+          id: 3,
+          question_content: 'Who was played with 7?',
+          question_type: 'TYPE_2',
+          quiz: null,
+          answers: [
+            { id: 6, answer_content: 'Cristiano Ronaldo', question: null, is_correct: true },
+            { id: 7, answer_content: 'Lionel Messi', question: null, is_correct: false },
+            { id: 8, answer_content: 'Robert Lewandowski', question: null, is_correct: false },
+            { id: 9, answer_content: 'Kylian Mbappe', question: null, is_correct: true },
+          ]
+        }
+      ]
+    }
+
+    const quiz_result: QuizResult = {
+      quiz_id: quiz_id,
+      questions: [
+        {
+          question_id: firstQuiz.questions[0].id,
+          question_content: firstQuiz.questions[0].question_content,
+          question_type: firstQuiz.questions[0].question_type,
+          student_answer_ids: [2],
+          correct_answer_ids: [2]
+        },
+        {
+          question_id: firstQuiz.questions[1].id,
+          question_content: firstQuiz.questions[1].question_content,
+          question_type: firstQuiz.questions[1].question_type,
+          student_text_answer: 'william shakespeare',
+          correct_text_answer: 'William Shakespeare'
+        },
+        {
+          question_id: firstQuiz.questions[2].id,
+          question_content: firstQuiz.questions[2].question_content,
+          question_type: firstQuiz.questions[2].question_type,
+          student_answer_ids: [6, 9],
+          correct_answer_ids: [6, 9]
+        }
+      ],
+      result: 3,
+      maxResult: 3,
+      perecentage_points: 100
+    }
+
+    it('should return true', async () => {
+      jest.spyOn(service, 'findQuiz').mockResolvedValueOnce(firstQuiz)
+
+      jest.spyOn(service, 'checkType1').mockResolvedValueOnce(true),
+        jest.spyOn(service, 'checkType4').mockResolvedValueOnce(true),
+        jest.spyOn(service, 'checkType2').mockResolvedValueOnce(true)
+
+
+      const result = await service.checkAnswers(quiz_id, student_answers)
+
+      expect(result).toEqual(quiz_result)
+    })
+
+    const second_student_answers: checkQuestionInput[] = [
+      {
+        question_id: 1,
+        answer_ids: [2],
+        textAnswer: null
+      },
+      {
+        question_id: 2,
+        answer_ids: null,
+        textAnswer: 'william shakespeare'
+      },
+      {
+        question_id: 3,
+        answer_ids: [7, 9],
+        textAnswer: null
+      }
+    ]
+
+    const second_quiz_result: QuizResult = {
+      quiz_id: quiz_id,
+      questions: [
+        {
+          question_id: firstQuiz.questions[0].id,
+          question_content: firstQuiz.questions[0].question_content,
+          question_type: firstQuiz.questions[0].question_type,
+          student_answer_ids: [2],
+          correct_answer_ids: [2]
+        },
+        {
+          question_id: firstQuiz.questions[1].id,
+          question_content: firstQuiz.questions[1].question_content,
+          question_type: firstQuiz.questions[1].question_type,
+          student_text_answer: 'william shakespeare',
+          correct_text_answer: 'William Shakespeare'
+        },
+        {
+          question_id: firstQuiz.questions[2].id,
+          question_content: firstQuiz.questions[2].question_content,
+          question_type: firstQuiz.questions[2].question_type,
+          student_answer_ids: [7, 9],
+          correct_answer_ids: [6, 9]
+        }
+      ],
+      result: 2,
+      maxResult: 3,
+      perecentage_points: 67
+    }
+
+    it('should return true', async () => {
+      jest.spyOn(service, 'findQuiz').mockResolvedValueOnce(firstQuiz)
+
+      jest.spyOn(service, 'checkType1').mockResolvedValueOnce(true),
+        jest.spyOn(service, 'checkType4').mockResolvedValueOnce(true),
+        jest.spyOn(service, 'checkType2').mockResolvedValueOnce(false)
+
+
+      const result = await service.checkAnswers(quiz_id, second_student_answers)
+
+      expect(result).toEqual(second_quiz_result)
+    })
+  })
+
+  /*
+  describe('findQuiz', () => {
+
+    const quiz_id = 1;
+
+    it('should return quiz with provided id', async () => {
+
+      const mockQueryBuilder = {
+        leftJoinAndSelect: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        getOne: jest.fn().mockResolvedValue(mock_quiz), 
+      };
+
+      //jest.spyOn(quizRepository, 'createQueryBuilder').mockReturnValue(mockQueryBuilder);
+
+      const result = await service.findQuiz(quiz_id);
+
+      expect(result).toEqual(mock_quiz)
+      //expect(quizRepository.createQueryBuilder).toHaveBeenCalled();
+    })
+  })
+  */
+
+
+  describe('findAll', () => {
+    const firstQuiz: Quiz = {
+      id: 1,
+      title: 'example quiz',
+      questions: [
+        {
+          id: 1,
+          quiz: null,
+          question_type: 'TYPE_1',
+          question_content: 'What is the capital of France?',
+          answers: [
+            { id: 1, answer_content: 'London', question: null, is_correct: false },
+            { id: 2, answer_content: 'Paris', question: null, is_correct: true },
+            { id: 3, answer_content: 'Berlin', question: null, is_correct: false },
+            { id: 4, answer_content: 'Rome', question: null, is_correct: false },
+          ],
+        },
+        {
+          id: 2,
+          quiz: null,
+          question_type: 'TYPE_4',
+          question_content: 'Who wrote the play "Romeo and Juliet"?',
+          answers: [],
+        }
+      ]
+    }
+
+    const secondQuiz: Quiz = {
+      id: 2,
+      title: 'example quiz 2',
+      questions: [
+        {
+          id: 3,
+          quiz: null,
+          question_type: 'TYPE_1',
+          question_content: 'Who won the 2016 euro cup',
+          answers: [
+            { id: 5, answer_content: 'France', question: null, is_correct: false },
+            { id: 6, answer_content: 'Poland', question: null, is_correct: false },
+            { id: 7, answer_content: 'Portugal', question: null, is_correct: true },
+            { id: 8, answer_content: 'Italy', question: null, is_correct: false },
+          ],
+        },
+        {
+          id: 4,
+          quiz: null,
+          question_type: 'TYPE_2',
+          question_content: 'Which colours the rainbow consists of?',
+          answers: [
+            { id: 9, answer_content: 'red', question: null, is_correct: true },
+            { id: 10, answer_content: 'orange', question: null, is_correct: true },
+            { id: 11, answer_content: 'black', question: null, is_correct: false }
+          ],
+        }
+      ]
+    }
+
+    const quizzes = [firstQuiz, secondQuiz]
+
+    it('should return two quizes', async () => {
+      jest.spyOn(quizRepository, 'find').mockResolvedValue(quizzes)
+
+      const result = await service.findAllQuizzes()
+
+      expect(result).toEqual(quizzes)
     })
   })
 });

@@ -23,9 +23,6 @@ describe('QuestionService', () => {
       providers: [QuestionService, AnswerService, {
         provide: getRepositoryToken(Question),
         useClass: Repository
-      },{
-        provide: DataSource,
-        useValue: {}
       },
       {
         provide: DataSource,
@@ -44,7 +41,6 @@ describe('QuestionService', () => {
     service = module.get<QuestionService>(QuestionService)
     questionRepository = module.get<Repository<Question>>(getRepositoryToken(Question));
     answerService = module.get<AnswerService>(AnswerService);
-    //answerRepository = module.get<Repository<Answer>>(getRepositoryToken(Answer))
     dataSource = module.get<DataSource>(DataSource);
   });
 

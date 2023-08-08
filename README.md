@@ -77,7 +77,7 @@ $ npm run test:cov
 
     ![](screenshots/checkQuestions.png)
 
-## Awailable queries and mutations
+## Available queries and mutations
 
 ```
 mutation {

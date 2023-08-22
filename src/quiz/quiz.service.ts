@@ -19,6 +19,7 @@ export class QuizService {
     
     async createQuiz(createQuizInput: CreateQuizInput): Promise <Quiz>{
         const {title, questions} = createQuizInput;
+        let savedQuiz
 
         const queryRunner = this.dataSource.createQueryRunner();
 
@@ -27,7 +28,7 @@ export class QuizService {
 
         try{
             const quiz = this.quizRepository.create({title});
-            const savedQuiz = await this.quizRepository.save(quiz);
+            savedQuiz = await this.quizRepository.save(quiz);
             savedQuiz.questions = [];
 
             for(const question of questions){ 
@@ -36,7 +37,6 @@ export class QuizService {
             }
 
             await queryRunner.commitTransaction();
-            return savedQuiz;
         }
         catch(err){
             await queryRunner.rollbackTransaction();
@@ -45,6 +45,7 @@ export class QuizService {
         finally{
             await queryRunner.release();
         }
+        return savedQuiz;
     }
 
     async checkType1(student_answer: checkQuestionInput, question: Question): Promise <boolean>{

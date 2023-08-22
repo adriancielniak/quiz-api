@@ -16,6 +16,7 @@ export class QuestionService{
 
   async createQuestion(quiz_id: number, createQuestionInput: CreateQuestionInput): Promise<Question>{
     const {question_type, question_content, answers} = createQuestionInput;
+    let savedQuestion 
 
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -30,16 +31,15 @@ export class QuestionService{
         question_content
       };
 
-      const savedQuestion = await this.questionRepository.save(question);
+      savedQuestion = await this.questionRepository.save(question);
       savedQuestion.answers = [];
 
       for (const answer of answers) {
         const savedAnswer = await this.answerService.createAnswer(savedQuestion.id, answer);
         savedQuestion.answers.push(savedAnswer)
       }
-
+      
       await queryRunner.commitTransaction();
-      return savedQuestion;
     }
     catch(err){
       await queryRunner.rollbackTransaction();
@@ -48,6 +48,7 @@ export class QuestionService{
     finally{
       await queryRunner.release();
     }
+    return savedQuestion;
   }
 
   async findQuizQuestions(quiz_id: number): Promise <Question[]>{

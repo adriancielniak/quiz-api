@@ -9,7 +9,7 @@ import { checkQuestionInput } from 'src/question/dto/create-question.input';
 export class QuizResolver {
     constructor(
         private readonly quizService: QuizService
-    ) { }
+    ) {}
 
     @Mutation(() => Quiz)
     createQuiz(@Args('createQuizInput') createQuizInput: CreateQuizInput) {

@@ -5,8 +5,7 @@ import { DataSource, Repository } from 'typeorm';
 import { Question, QuestionResult } from 'src/question/entities/question.entity';
 import { QuestionService } from 'src/question/question.service';
 import { CreateQuizInput } from './dto/create-quiz.input';
-import { checkQuestionInput, CreateQuestionInput } from 'src/question/dto/create-question.input';
-//import { _ } from "lodash"
+import { checkQuestionInput } from 'src/question/dto/create-question.input';
 
 @Injectable()
 export class QuizService {
@@ -27,8 +26,6 @@ export class QuizService {
         await queryRunner.startTransaction();
 
         try{
-
-            
             const quiz = this.quizRepository.create({title});
             const savedQuiz = await this.quizRepository.save(quiz);
             savedQuiz.questions = [];
@@ -37,7 +34,6 @@ export class QuizService {
                const savedQuestion = await this.questionService.createQuestion(savedQuiz.id, question);
                savedQuiz.questions.push(savedQuestion);
             }
-            //await this.quizRepository.save(savedQuiz);
 
             await queryRunner.commitTransaction();
             return savedQuiz;
@@ -75,7 +71,6 @@ export class QuizService {
     async checkType4(student_answer: checkQuestionInput, question: Question): Promise <boolean>{
         const correct_text_answer = question.answers[0].answer_content;
         return student_answer.textAnswer.toLowerCase() === correct_text_answer.toLowerCase();
-        //return _.toLower(student_answer.textAnswer).replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '') === _.toLower(correct_text_answer).replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
     }
 
     async checkAnswers(quiz_id: number, student_answers: checkQuestionInput []): Promise <QuizResult>{

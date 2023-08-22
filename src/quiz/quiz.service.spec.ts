@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import { mock } from 'node:test';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { AnswerService } from 'src/answer/answer.service';
 import { Answer } from 'src/answer/entities/answer.entity';
 import { checkQuestionInput } from 'src/question/dto/create-question.input';
@@ -9,7 +8,6 @@ import { QuestionService } from 'src/question/question.service';
 import { DataSource, Repository } from 'typeorm';
 import { CreateQuizInput } from './dto/create-quiz.input';
 import { Quiz, QuizResult } from './entities/quiz.entity';
-import { QuizModule } from './quiz.module';
 import { QuizService } from './quiz.service';
 
 jest.mock('src/answer/answer.service')
@@ -464,30 +462,6 @@ describe('QuizService', () => {
       expect(result).toEqual(second_quiz_result)
     })
   })
-
-  /*
-  describe('findQuiz', () => {
-
-    const quiz_id = 1;
-
-    it('should return quiz with provided id', async () => {
-
-      const mockQueryBuilder = {
-        leftJoinAndSelect: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        getOne: jest.fn().mockResolvedValue(mock_quiz), 
-      };
-
-      //jest.spyOn(quizRepository, 'createQueryBuilder').mockReturnValue(mockQueryBuilder);
-
-      const result = await service.findQuiz(quiz_id);
-
-      expect(result).toEqual(mock_quiz)
-      //expect(quizRepository.createQueryBuilder).toHaveBeenCalled();
-    })
-  })
-  */
-
 
   describe('findAll', () => {
     const firstQuiz: Quiz = {

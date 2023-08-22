@@ -49,7 +49,6 @@ type Query {
   getAllQuestions: [Question!]!
   findQuizQuestions(quiz_id: Int!): [Question!]!
   findFullQuestions(quiz_id: Int!): [Question!]!
-  sayHello: String!
 }
 
 input checkQuestionInput {

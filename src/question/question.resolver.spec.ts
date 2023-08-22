@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Question } from './entities/question.entity';
-import { QuestionModule } from './question.module';
 import { QuestionResolver } from './question.resolver';
 import { QuestionService } from './question.service';
 

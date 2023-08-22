@@ -4,7 +4,6 @@ import { Question } from './entities/question.entity';
 import { DataSource, DeepPartial, Repository } from 'typeorm';
 import { AnswerService } from 'src/answer/answer.service';
 import { CreateQuestionInput } from './dto/create-question.input';
-import { CreateAnswerInput } from 'src/answer/dto/create-answer.input';
 
 @Injectable()
 export class QuestionService{

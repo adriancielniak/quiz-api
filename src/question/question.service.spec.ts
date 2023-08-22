@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import exp from 'constants';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { AnswerService } from 'src/answer/answer.service';
 import { DataSource, Repository } from 'typeorm';
 import { CreateQuestionInput } from './dto/create-question.input';
@@ -14,8 +13,6 @@ describe('QuestionService', () => {
   let answerService: AnswerService;
   let dataSource: DataSource;
   let questionRepository: Repository<Question>
-  //let answerRepository: Repository<Answer>
-
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

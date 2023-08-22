@@ -5,14 +5,12 @@
 
 - Make sure that you have at leat 3.9 docker version
 
-- Clone the repository and install the necessary dependencies 
+- Clone the repository and install npm 
 
 ```bash
 $ git clone https://github.com/adriancielniak/quiz-api.git
 
 $ npm install
- 
-$ ./install-dependencies.sh
 ```
 
 ## Running the app

@@ -1,22 +1,51 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Question } from 'src/question/entities/question.entity';
+import { DataSource, Repository } from 'typeorm';
 import { AnswerService } from './answer.service';
 import { Answer } from './entities/answer.entity';
 
+const question: Question = {
+  id: 1,
+  question_content: 'content',
+  question_type: 'TYPE_3',
+  quiz: null,
+  answers: []
+}
 
 describe('AnswerService', () => {
   let service: AnswerService;
   let answerRepository: Repository<Answer>;
+  let dataSource: DataSource;
   
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [AnswerService, {
         provide: getRepositoryToken(Answer),
         useClass: Repository
+      },
+      {
+        provide: getRepositoryToken(Question),
+        useClass: Repository
+      },
+      {
+        provide: DataSource,
+        useValue: {
+          createQueryRunner: jest.fn(() => ({
+            manager: {
+              findOne: jest.fn().mockResolvedValue(question),
+           },
+            connect: jest.fn(),
+            startTransaction: jest.fn(),
+            commitTransaction: jest.fn(),
+            rollbackTransaction: jest.fn(),
+            release: jest.fn(),
+          })),
+        },
       }]
     }).compile();
 
+    dataSource = module.get<DataSource>(DataSource);
     service = module.get<AnswerService>(AnswerService)
     answerRepository = module.get<Repository<Answer>>(getRepositoryToken(Answer));
   });
@@ -44,7 +73,9 @@ describe('AnswerService', () => {
         question: null
       } 
 
-      jest.spyOn(answerRepository, 'save').mockResolvedValueOnce(answer_result);
+      jest.spyOn(answerRepository, 'create').mockReturnValue(answer_result);
+  
+      //jest.spyOn(customQueryRunner.manager.findOne, 'findOne').mockReturnValue(question);
 
       const result = await service.createAnswer(question_id, answer_input);
 

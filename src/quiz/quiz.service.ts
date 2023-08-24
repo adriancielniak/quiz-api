@@ -19,24 +19,29 @@ export class QuizService {
     
     async createQuiz(createQuizInput: CreateQuizInput): Promise <Quiz>{
         const {title, questions} = createQuizInput;
-        let savedQuiz
 
         const queryRunner = this.dataSource.createQueryRunner();
 
         await queryRunner.connect();
+
         await queryRunner.startTransaction();
 
         try{
-            const quiz = this.quizRepository.create({title});
-            savedQuiz = await this.quizRepository.save(quiz);
-            savedQuiz.questions = [];
+            let quiz = this.quizRepository.create({title});
+            quiz = await queryRunner.manager.save(quiz)
+            quiz.questions = []
+
+            const savedQuiz = await queryRunner.manager.save(quiz)
 
             for(const question of questions){ 
-               const savedQuestion = await this.questionService.createQuestion(savedQuiz.id, question);
-               savedQuiz.questions.push(savedQuestion);
+                let questionToSave = await this.questionService.createQuestion(savedQuiz.id, question);
+                questionToSave = await queryRunner.manager.save(questionToSave)
+                savedQuiz.questions.push(questionToSave)
             }
 
             await queryRunner.commitTransaction();
+
+            return savedQuiz;
         }
         catch(err){
             await queryRunner.rollbackTransaction();
@@ -45,7 +50,6 @@ export class QuizService {
         finally{
             await queryRunner.release();
         }
-        return savedQuiz;
     }
 
     async checkType1(student_answer: checkQuestionInput, question: Question): Promise <boolean>{

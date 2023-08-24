@@ -1,30 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Answer } from './entities/answer.entity';
-import { DeepPartial } from 'typeorm';
 import { CreateAnswerInput } from './dto/create-answer.input';
+import { Question } from 'src/question/entities/question.entity';
 
 @Injectable()
 export class AnswerService {
   constructor(
     @InjectRepository(Answer)
     private readonly answerRepository: Repository<Answer>,
+    private dataSource: DataSource
   ){}
 
   async createAnswer(question_id: number, createAnswerInput: CreateAnswerInput): Promise <Answer>{
-    const { answer_content, is_correct, priority } = createAnswerInput;
+    const queryRunner = this.dataSource.createQueryRunner();
 
-    const answer: DeepPartial<Answer> = {
-      question: {id: question_id},
-      answer_content,
-      is_correct,
-      priority,
-    };
+    await queryRunner.connect();
 
-    const savedAnswer = await this.answerRepository.save(answer);
+    const answer = this.answerRepository.create({ ...createAnswerInput})
+    answer.question = await queryRunner.manager.findOne(Question, { where: { id: question_id } })
 
-    return savedAnswer;
+    await queryRunner.release();
+
+    return answer;
   }
 
   async getAnswers(questionId: number): Promise <Answer[]>{

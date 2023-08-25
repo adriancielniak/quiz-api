@@ -1,12 +1,27 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { AnswerService } from 'src/answer/answer.service';
+import { Quiz } from 'src/quiz/entities/quiz.entity';
 import { DataSource, Repository } from 'typeorm';
 import { CreateQuestionInput } from './dto/create-question.input';
 import { Question } from './entities/question.entity';
 import { QuestionService } from './question.service';
 
 jest.mock('src/answer/answer.service')
+
+const quiz: Quiz = {
+  id: 1,
+  title: 'title',
+  questions: []
+}
+
+const question: Question = {
+  id: 1,
+  quiz: quiz,
+  question_type: 'TYPE_1',
+  question_content: 'content',
+  answers: []
+}
 
 describe('QuestionService', () => {
   let service: QuestionService;
@@ -25,6 +40,10 @@ describe('QuestionService', () => {
         provide: DataSource,
         useValue: {
           createQueryRunner: jest.fn(() => ({
+            manager: {
+              findOne: jest.fn().mockResolvedValue(quiz),
+              save: jest.fn().mockResolvedValue(question)
+           },
               connect: jest.fn(),
               startTransaction: jest.fn(),
               commitTransaction: jest.fn(),
@@ -63,19 +82,21 @@ describe('QuestionService', () => {
           answers: []
         }
 
-        const question_result: Question = {
+        const questionWithoutId: Question = {
           id: 1,
-          quiz: null,
+          quiz: quiz,
           question_type: 'TYPE_1',
           question_content: 'content',
           answers: []
         }
 
-        jest.spyOn(questionRepository, 'save').mockResolvedValueOnce(question_result);
+        jest.spyOn(questionRepository, 'create').mockReturnValueOnce(questionWithoutId);
+
+        jest.spyOn(questionRepository, 'save').mockResolvedValueOnce(question);
 
         const result = await service.createQuestion(quiz_id, question_input);
 
-        expect(result).toEqual(question_result);
+        expect(result).toEqual(question);
 
     })
   })

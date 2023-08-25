@@ -29,7 +29,8 @@ export class QuestionService{
 
       question.answers = []
 
-      const savedQuestion = await queryRunner.manager.save(question)
+      let savedQuestion = await queryRunner.manager.save(question)
+      savedQuestion.quiz = quiz;
       
       for (const answer of answers) {
         let answerToSave = await this.answerService.createAnswer(savedQuestion, answer);

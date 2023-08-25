@@ -11,17 +11,10 @@ export class AnswerService {
   constructor(
     @InjectRepository(Answer)
     private readonly answerRepository: Repository<Answer>,
-    //private readonly questionService: QuestionService
   ){}
 
   async createAnswer(question: Question, createAnswerInput: CreateAnswerInput): Promise <Answer>{
     const answer = this.answerRepository.create({ ...createAnswerInput });
-
-    //const question = await this.questionService.findQuestion(question_id);
-
-    if (!question) {
-        throw new Error(`question not found`);
-    }
 
     answer.question = question;
 

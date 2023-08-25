@@ -27,10 +27,6 @@ export class QuestionService{
     try{
       const question = this.questionRepository.create({ question_content, question_type})
 
-      if(!quiz){
-        throw new Error('quiz not found')
-      }
-
       question.answers = []
 
       const savedQuestion = await queryRunner.manager.save(question)

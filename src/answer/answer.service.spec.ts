@@ -77,7 +77,7 @@ describe('AnswerService', () => {
   
       //jest.spyOn(customQueryRunner.manager.findOne, 'findOne').mockReturnValue(question);
 
-      const result = await service.createAnswer(question_id, answer_input);
+      const result = await service.createAnswer(question, answer_input);
 
       expect(result).toEqual(answer_result);
     });

@@ -94,7 +94,7 @@ describe('QuestionService', () => {
 
         jest.spyOn(questionRepository, 'save').mockResolvedValueOnce(question);
 
-        const result = await service.createQuestion(quiz_id, question_input);
+        const result = await service.createQuestion(quiz, question_input);
 
         expect(result).toEqual(question);
 

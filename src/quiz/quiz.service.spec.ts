@@ -13,44 +13,10 @@ import { QuizService } from './quiz.service';
 jest.mock('src/answer/answer.service')
 jest.mock('src/question/question.service')
 
-const mock_quiz: Quiz = {
+const quiz_result: Quiz = {
   id: 1,
-  title: 'example quiz',
-  questions: [
-    {
-      id: 1,
-      quiz: null,
-      question_type: 'TYPE_1',
-      question_content: 'What is the capital of France?',
-      answers: [
-        { id: 1, answer_content: 'London', question: null, is_correct: false },
-        { id: 2, answer_content: 'Paris', question: null, is_correct: true },
-        { id: 3, answer_content: 'Berlin', question: null, is_correct: false },
-        { id: 4, answer_content: 'Rome', question: null, is_correct: false },
-      ],
-    },
-    {
-      id: 2,
-      quiz: null,
-      question_type: 'TYPE_4',
-      question_content: 'Who wrote the play "Romeo and Juliet"?',
-      answers: [
-        { id: 5, answer_content: 'William Shakespeare', question: null },
-      ],
-    },
-    {
-      id: 3,
-      question_content: 'Who was played with 7?',
-      question_type: 'TYPE_2',
-      quiz: null,
-      answers: [
-        { id: 6, answer_content: 'Cristiano Ronaldo', question: null, is_correct: true },
-        { id: 7, answer_content: 'Lionel Messi', question: null, is_correct: false },
-        { id: 8, answer_content: 'Robert Lewandowski', question: null, is_correct: false },
-        { id: 9, answer_content: 'Kylian Mbappe', question: null, is_correct: true },
-      ]
-    }
-  ]
+  title: 'title',
+  questions: []
 }
 
 describe('QuizService', () => {
@@ -74,6 +40,9 @@ describe('QuizService', () => {
           provide: DataSource,
           useValue: {
             createQueryRunner: jest.fn(() => ({
+              manager: {
+                save: jest.fn().mockResolvedValue(quiz_result)
+             },
               connect: jest.fn(),
               startTransaction: jest.fn(),
               commitTransaction: jest.fn(),
@@ -107,12 +76,6 @@ describe('QuizService', () => {
     it('should create and return new quiz', async () => {
 
       const quiz_input: CreateQuizInput = {
-        title: 'title',
-        questions: []
-      }
-
-      const quiz_result: Quiz = {
-        id: 1,
         title: 'title',
         questions: []
       }

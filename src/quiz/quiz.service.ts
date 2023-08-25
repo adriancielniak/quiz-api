@@ -28,7 +28,7 @@ export class QuizService {
 
         try{
             let quiz = this.quizRepository.create({title});
-            quiz = await queryRunner.manager.save(quiz)
+            //quiz = await queryRunner.manager.save(quiz)
             quiz.questions = []
 
             const savedQuiz = await queryRunner.manager.save(quiz)

@@ -15,7 +15,7 @@ export class QuestionService{
     private dataSource: DataSource
   ){}
 
-  async createQuestion(quiz_id: number, createQuestionInput: CreateQuestionInput): Promise<Question>{
+  async createQuestion(quiz: Quiz, createQuestionInput: CreateQuestionInput): Promise<Question>{
     const {question_type, question_content, answers} = createQuestionInput; 
 
     const queryRunner = this.dataSource.createQueryRunner();
@@ -27,13 +27,16 @@ export class QuestionService{
     try{
       const question = this.questionRepository.create({ question_content, question_type})
 
-      question.quiz = await queryRunner.manager.findOne(Quiz, { where: { id: quiz_id } })
+      if(!quiz){
+        throw new Error('quiz not found')
+      }
+
       question.answers = []
 
       const savedQuestion = await queryRunner.manager.save(question)
       
       for (const answer of answers) {
-        let answerToSave = await this.answerService.createAnswer(savedQuestion.id, answer);
+        let answerToSave = await this.answerService.createAnswer(savedQuestion, answer);
         answerToSave = await queryRunner.manager.save(answerToSave)
         savedQuestion.answers.push(answerToSave)
       }

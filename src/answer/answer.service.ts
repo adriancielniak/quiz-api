@@ -4,24 +4,26 @@ import { DataSource, Repository } from 'typeorm';
 import { Answer } from './entities/answer.entity';
 import { CreateAnswerInput } from './dto/create-answer.input';
 import { Question } from 'src/question/entities/question.entity';
+import { QuestionService } from 'src/question/question.service';
 
 @Injectable()
 export class AnswerService {
   constructor(
     @InjectRepository(Answer)
     private readonly answerRepository: Repository<Answer>,
-    private dataSource: DataSource
+    //private readonly questionService: QuestionService
   ){}
 
-  async createAnswer(question_id: number, createAnswerInput: CreateAnswerInput): Promise <Answer>{
-    const queryRunner = this.dataSource.createQueryRunner();
+  async createAnswer(question: Question, createAnswerInput: CreateAnswerInput): Promise <Answer>{
+    const answer = this.answerRepository.create({ ...createAnswerInput });
 
-    await queryRunner.connect();
+    //const question = await this.questionService.findQuestion(question_id);
 
-    const answer = this.answerRepository.create({ ...createAnswerInput})
-    answer.question = await queryRunner.manager.findOne(Question, { where: { id: question_id } })
+    if (!question) {
+        throw new Error(`question not found`);
+    }
 
-    await queryRunner.release();
+    answer.question = question;
 
     return answer;
   }

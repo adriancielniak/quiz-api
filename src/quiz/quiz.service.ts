@@ -28,13 +28,12 @@ export class QuizService {
 
         try{
             let quiz = this.quizRepository.create({title});
-            //quiz = await queryRunner.manager.save(quiz)
             quiz.questions = []
 
             const savedQuiz = await queryRunner.manager.save(quiz)
 
             for(const question of questions){ 
-                let questionToSave = await this.questionService.createQuestion(savedQuiz.id, question);
+                let questionToSave = await this.questionService.createQuestion(savedQuiz, question);
                 questionToSave = await queryRunner.manager.save(questionToSave)
                 savedQuiz.questions.push(questionToSave)
             }

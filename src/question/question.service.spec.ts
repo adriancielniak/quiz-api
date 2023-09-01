@@ -74,8 +74,6 @@ describe('QuestionService', () => {
 
   describe('createQuestions' , () => {
     it('should create and return new question ', async () =>{
-        const quiz_id = 1;
-
         const question_input: CreateQuestionInput = {
           question_type: 'TYPE_1',
           question_content: 'content',
@@ -94,7 +92,9 @@ describe('QuestionService', () => {
 
         jest.spyOn(questionRepository, 'save').mockResolvedValueOnce(question);
 
-        const result = await service.createQuestion(quiz, question_input);
+        const queryRunner = dataSource.createQueryRunner()
+
+        const result = await service.createQuestion(quiz, question_input, queryRunner);
 
         expect(result).toEqual(question);
 

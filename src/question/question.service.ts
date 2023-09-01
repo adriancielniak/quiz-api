@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from './entities/question.entity';
-import { DataSource, QueryRunner, Repository } from 'typeorm';
+import { QueryRunner, Repository } from 'typeorm';
 import { AnswerService } from 'src/answer/answer.service';
 import { CreateQuestionInput } from './dto/create-question.input';
 import { Quiz } from 'src/quiz/entities/quiz.entity';
@@ -12,7 +12,6 @@ export class QuestionService{
     @InjectRepository(Question)
     private readonly questionRepository: Repository<Question>,
     private readonly answerService: AnswerService,
-    private dataSource: DataSource
   ){}
 
   async createQuestion(quiz: Quiz, createQuestionInput: CreateQuestionInput, queryRunner:QueryRunner): Promise<Question>{
@@ -27,13 +26,20 @@ export class QuestionService{
       const savedQuestion = await queryRunner.manager.save(question)
       
       for (const answer of answers) {
+        if(question_type === 'TYPE_3' && (answer.is_correct != null || answer.priority == null)){
+          throw new BadRequestException('A question of type 3 have only a priority field.')
+        }
+
+        if((question_type === 'TYPE_1' || question_type === 'TYPE_2' || question_type === 'TYPE_4') && (answer.priority != null || answer.is_correct == null)){
+          throw new BadRequestException('A question of type 1/2/3 have only an is_correct field.')
+        }
+
         let answerToSave = await this.answerService.createAnswer(savedQuestion, answer);
         answerToSave = await queryRunner.manager.save(answerToSave)
         savedQuestion.answers.push(answerToSave)
       }
 
       return savedQuestion
-      
     }
     catch(err){
       throw err;

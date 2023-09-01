@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from './entities/question.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { AnswerService } from 'src/answer/answer.service';
 import { CreateQuestionInput } from './dto/create-question.input';
 import { Quiz } from 'src/quiz/entities/quiz.entity';
@@ -15,40 +15,29 @@ export class QuestionService{
     private dataSource: DataSource
   ){}
 
-  async createQuestion(quiz: Quiz, createQuestionInput: CreateQuestionInput): Promise<Question>{
+  async createQuestion(quiz: Quiz, createQuestionInput: CreateQuestionInput, queryRunner:QueryRunner): Promise<Question>{
     const {question_type, question_content, answers} = createQuestionInput; 
-
-    const queryRunner = this.dataSource.createQueryRunner();
-
-    await queryRunner.connect();
-
-    await queryRunner.startTransaction();
 
     try{
       const question = this.questionRepository.create({ question_content, question_type})
 
       question.answers = []
+      question.quiz = quiz;
 
-      let savedQuestion = await queryRunner.manager.save(question)
-      savedQuestion.quiz = quiz;
+      const savedQuestion = await queryRunner.manager.save(question)
       
       for (const answer of answers) {
         let answerToSave = await this.answerService.createAnswer(savedQuestion, answer);
         answerToSave = await queryRunner.manager.save(answerToSave)
         savedQuestion.answers.push(answerToSave)
       }
-      
-      await queryRunner.commitTransaction();
 
       return savedQuestion
+      
     }
     catch(err){
-      await queryRunner.rollbackTransaction();
-      throw new Error(err)
+      throw err;
     } 
-    finally{
-      await queryRunner.release();
-    }
   }
 
   async findQuizQuestions(quiz_id: number): Promise <Question[]>{

@@ -27,17 +27,17 @@ export class QuizService {
         await queryRunner.startTransaction();
 
         try{
-            let quiz = this.quizRepository.create({title});
+            const quiz = this.quizRepository.create({title});
             quiz.questions = []
 
-            let savedQuiz = await queryRunner.manager.save(quiz)
+            const savedQuiz = await queryRunner.manager.save(quiz)
 
             for(const question of questions){ 
-                let questionToSave = await this.questionService.createQuestion(quiz, question);
+                let questionToSave = await this.questionService.createQuestion(quiz, question, queryRunner);
                 questionToSave = await queryRunner.manager.save(questionToSave)
                 savedQuiz.questions.push(questionToSave)
             }
-
+            
             await queryRunner.commitTransaction();
 
             return savedQuiz;

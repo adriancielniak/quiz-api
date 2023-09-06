@@ -90,6 +90,25 @@ describe('QuizService', () => {
     })
   })
 
+  describe('checkAnswers', () => {
+    const first_student_answer: checkQuestionInput = {
+      question_id: 1,
+      answer_ids: [1],
+      textAnswer: null
+    }
+
+    it('should return error' , async () => {
+      jest.spyOn(service, 'findQuiz').mockResolvedValueOnce(null)
+
+      try{
+        await service.checkAnswers(1 ,[first_student_answer])
+      }
+      catch (error){
+        expect(error.message).toBe('quiz not found or questions not found');
+      }
+    })
+  })
+
   describe('checkAnswers1', () => {
     const first_student_answer: checkQuestionInput = {
       question_id: 1,

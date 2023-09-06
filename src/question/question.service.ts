@@ -27,15 +27,15 @@ export class QuestionService{
       
       for (const answer of answers) {
         if(question_type === 'TYPE_3' && answer.is_correct != null){
-          throw new BadRequestException('A question of type 3 have only a priority field.')
+          throw new BadRequestException('A question of type 3 has only a priority field.')
         }
 
         if((question_type === 'TYPE_1' || question_type === 'TYPE_2') && answer.priority != null){
-          throw new BadRequestException('A question of type 1/2 have only an is_correct field.')
+          throw new BadRequestException('A question of type 1/2 has only an is_correct field.')
         }
 
         if((question_type === 'TYPE_4') && (answer.priority != null || answer.is_correct != null)){
-          throw new BadRequestException('A question of type 4 should not have a priority or is_correct field.')
+          throw new BadRequestException('A question of type 4 should not has a priority or is_correct field.')
         }
 
         let answerToSave = await this.answerService.createAnswer(savedQuestion, answer);

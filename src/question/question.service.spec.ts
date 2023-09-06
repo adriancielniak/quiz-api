@@ -99,7 +99,140 @@ describe('QuestionService', () => {
         expect(result).toEqual(question);
 
     })
+
+    it('should return error', async ()=> {
+      const question_input: CreateQuestionInput = {
+        question_type: 'TYPE_1',
+        question_content: 'content',
+        answers: [{
+          answer_content: "content",
+          priority: 1,
+          is_correct: null 
+        }]
+      }
+
+      const question_result: Question = {
+        id: 1,
+        question_content: 'content',
+        question_type: 'TYPE_1',
+        quiz: null,
+        answers: []
+      }
+
+      jest.spyOn(questionRepository, 'create').mockReturnValueOnce(question_result);
+
+      jest.spyOn(questionRepository, 'save').mockResolvedValueOnce(question_result);
+
+      const queryRunner = dataSource.createQueryRunner()
+
+      try{
+        await service.createQuestion(null, question_input, queryRunner);
+      }
+      catch (BadRequestException){
+        expect(BadRequestException.message).toBe('A question of type 1/2 has only an is_correct field.');
+      }
+    })
+
+    it('should return error', async () => {
+      const question_input: CreateQuestionInput = {
+        question_type: 'TYPE_4',
+        question_content: 'content',
+        answers: [{
+          answer_content: "content",
+          priority: 1,
+        }]
+      }
+
+      const question_result: Question = {
+        id: 1,
+        question_content: 'content',
+        question_type: 'TYPE_4',
+        quiz: null,
+        answers: []
+      }
+
+      jest.spyOn(questionRepository, 'create').mockReturnValueOnce(question_result);
+
+      jest.spyOn(questionRepository, 'save').mockResolvedValueOnce(question_result);
+
+      const queryRunner = dataSource.createQueryRunner()
+
+      try{
+        await service.createQuestion(null, question_input, queryRunner);
+      }
+      catch (BadRequestException){
+        expect(BadRequestException.message).toBe('A question of type 4 should not has a priority or is_correct field.');
+      }
+    })
+
+    it('should return error', async () => {
+      const question_input: CreateQuestionInput = {
+        question_type: 'TYPE_2',
+        question_content: 'content',
+        answers: [{
+          answer_content: "content",
+          is_correct: true,
+          priority: 1,
+        }]
+      }
+
+      const question_result: Question = {
+        id: 1,
+        question_content: 'content',
+        question_type: 'TYPE_2',
+        quiz: null,
+        answers: []
+      }
+
+      jest.spyOn(questionRepository, 'create').mockReturnValueOnce(question_result);
+
+      jest.spyOn(questionRepository, 'save').mockResolvedValueOnce(question_result);
+
+      const queryRunner = dataSource.createQueryRunner()
+
+      try{
+        await service.createQuestion(null, question_input, queryRunner);
+      }
+      catch (BadRequestException){
+        expect(BadRequestException.message).toBe('A question of type 1/2 has only an is_correct field.');
+      }
+    })
+
+    it('should return error', async () => {
+      const question_input: CreateQuestionInput = {
+        question_type: 'TYPE_3',
+        question_content: 'content',
+        answers: [{
+          answer_content: "content",
+          is_correct: true,
+          priority: 1
+        }]
+      }
+
+      const question_result: Question = {
+        id: 1,
+        question_content: 'content',
+        question_type: 'TYPE_3',
+        quiz: null,
+        answers: []
+      }
+
+      jest.spyOn(questionRepository, 'create').mockReturnValueOnce(question_result);
+
+      jest.spyOn(questionRepository, 'save').mockResolvedValueOnce(question_result);
+
+      const queryRunner = dataSource.createQueryRunner()
+
+      try{
+        await service.createQuestion(null, question_input, queryRunner);
+      }
+      catch (BadRequestException){
+        expect(BadRequestException.message).toBe('A question of type 3 has only a priority field.');
+      }
+    })
   })
+
+
 
   describe('getQuizQuestions', () => {
     it('should return questions for the specific quiz', async () =>{

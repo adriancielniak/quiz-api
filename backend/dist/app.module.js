@@ -14,6 +14,7 @@ const question_module_1 = require("./question/question.module");
 const answer_module_1 = require("./answer/answer.module");
 const apollo_1 = require("@nestjs/apollo");
 const typeorm_1 = require("@nestjs/typeorm");
+const path_1 = require("path");
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
@@ -21,7 +22,7 @@ exports.AppModule = AppModule = __decorate([
         imports: [
             graphql_1.GraphQLModule.forRoot({
                 driver: apollo_1.ApolloDriver,
-                autoSchemaFile: './schema.gql',
+                autoSchemaFile: (0, path_1.join)(process.cwd(), 'src/schema.gql'),
                 playground: true,
             }),
             typeorm_1.TypeOrmModule.forRoot({

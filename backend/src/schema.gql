@@ -1,0 +1,79 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Answer {
+  id: Int!
+  question: Question!
+  answer_content: String!
+  priority: Int
+  is_correct: Boolean
+}
+
+type Question {
+  id: Int!
+  quiz: Quiz!
+  question_type: String!
+  question_content: String!
+  answers: [Answer!]!
+}
+
+type QuestionResult {
+  question_id: Int!
+  question_content: String!
+  question_type: String!
+  student_answer_ids: [Int!]
+  correct_answer_ids: [Int!]
+  student_text_answer: String
+  correct_text_answer: String
+}
+
+type Quiz {
+  id: Int!
+  title: String!
+  questions: [Question!]!
+}
+
+type QuizResult {
+  quiz_id: Int!
+  questions: [QuestionResult!]!
+  result: Int!
+  maxResult: Int!
+  perecentage_points: Int!
+}
+
+type Query {
+  findAllQuizzes: [Quiz!]!
+  findQuiz(quiz_id: Int!): Quiz!
+  checkAnswers(quiz_id: Int!, student_answers: [checkQuestionInput!]!): QuizResult!
+  getAllQuestions: [Question!]!
+  findQuizQuestions(quiz_id: Int!): [Question!]!
+  findFullQuestions(quiz_id: Int!): [Question!]!
+}
+
+input checkQuestionInput {
+  question_id: Int!
+  answer_ids: [Int!]
+  textAnswer: String
+}
+
+type Mutation {
+  createQuiz(createQuizInput: CreateQuizInput!): Quiz!
+}
+
+input CreateQuizInput {
+  title: String!
+  questions: [CreateQuestionInput!]!
+}
+
+input CreateQuestionInput {
+  question_type: String!
+  question_content: String!
+  answers: [CreateAnswerInput!]!
+}
+
+input CreateAnswerInput {
+  answer_content: String!
+  priority: Int
+  is_correct: Boolean
+}

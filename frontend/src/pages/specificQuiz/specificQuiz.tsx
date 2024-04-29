@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 interface Answer {
   id: number;
   answer_content: string;
-  priority?: number;
+  textAnswer: boolean;
 }
 
 interface Question {
@@ -24,6 +24,12 @@ interface Result {
   questions: ResultQuestions []
   result: number
   maxResult: number
+}
+
+interface PersonalAnswers{
+  question_id: number
+  answer_ids: number []
+  text_answer: string
 }
 
 interface ResultQuestions{
@@ -99,7 +105,7 @@ const QuizQuestionsPage = (): JSX.Element => {
   const [answers, setAnswers] = useState<{ [questionId: number]: Answer[] }>({});
 
   const handleSingleChoiceChange = (questionId: number, answerId: string) => {
-    setAnswers({ ...answers, [questionId]: [{ id: parseInt(answerId), answer_content: '', priority: 0 }] });
+    setAnswers({ ...answers, [questionId]: [{ id: parseInt(answerId), answer_content: '', textAnswer: false }] });
   };
 
   const handleMultipleChoiceChange = (questionId: number, answerId: string) => {
@@ -108,15 +114,16 @@ const QuizQuestionsPage = (): JSX.Element => {
     if (answerIndex !== -1) {
       selectedAnswers.splice(answerIndex, 1);
     } else {
-      selectedAnswers.push({ id: parseInt(answerId), answer_content: '', priority: 0 });
+      selectedAnswers.push({ id: parseInt(answerId), answer_content: '', textAnswer: false });
     }
     setAnswers({ ...answers, [questionId]: selectedAnswers });
-  };
+};
 
   const handleTextAnswerChange = (questionId: number, text: string) => {
-    setAnswers({ ...answers, [questionId]: [{ id: 0, answer_content: text, priority: 0 }] });
+    setAnswers({ ...answers, [questionId]: [{ id: 0, answer_content: text, textAnswer: true }] });
   };
 
+  /*
   const handlePriorityChange = (questionId: number, answerId: number, change: number) => {
     const updatedAnswers = answers[questionId].map(answer => {
       if (answer.id === answerId) {
@@ -129,14 +136,15 @@ const QuizQuestionsPage = (): JSX.Element => {
     });
     setAnswers({ ...answers, [questionId]: updatedAnswers });
   };
+  */
 
   const SubmitAnswers = async () => {
     const formattedAnswers = Object.keys(answers).map((questionId) => {
       const answer = answers[parseInt(questionId)];
-      if (Array.isArray(answer)) {
+      if (answer[0].textAnswer === false) {
         return { question_id: parseInt(questionId), answer_ids: answer.map((ans) => ans.id) };
       } else {
-        return { question_id: parseInt(questionId), textAnswer: answer };
+        return { question_id: parseInt(questionId), textAnswer: answer[0].answer_content || '' };
       }
     });
 
@@ -172,17 +180,26 @@ const QuizQuestionsPage = (): JSX.Element => {
               </RadioGroup>
             )}
             {question.question_type === 'TYPE_2' && (
-              <FormGroup>
-                {question.answers.map((answer) => (
-                  <FormControlLabel
+    <FormGroup>
+        {question.answers.map((answer) => {
+            const isChecked = answers[question.id]?.some(a => a.id === answer.id);
+            return (
+                <FormControlLabel
                     key={answer.id}
-                    control={<Checkbox checked={(answers[question.id]?.findIndex(a => a.id === answer.id) !== -1) || false} onChange={() => handleMultipleChoiceChange(question.id, answer.id.toString())} />}
+                    control={
+                        <Checkbox
+                            checked={isChecked}
+                            onChange={() => handleMultipleChoiceChange(question.id, answer.id.toString())}
+                        />
+                    }
                     label={answer.answer_content}
-                  />
-                ))}
-              </FormGroup>
-            )}
-            {question.question_type === 'TYPE_3' && (
+                />
+            );
+        })}
+    </FormGroup>
+)}
+
+            {/* {question.question_type === 'TYPE_3' && (
               <FormControl>
                 <FormLabel>Sortuj odpowiedzi:</FormLabel>
                 {answers[question.id]?.map((answer, index) => (
@@ -197,7 +214,8 @@ const QuizQuestionsPage = (): JSX.Element => {
                   </div>
                 ))}
               </FormControl>
-            )}
+            )} */}
+            
             {question.question_type === 'TYPE_4' && (
               <TextField
                 variant="outlined"

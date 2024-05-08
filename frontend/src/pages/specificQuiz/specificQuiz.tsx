@@ -15,7 +15,6 @@ import { useApolloClient } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 import { FIND_FULL_QUESTIONS, CHECK_ANSWERS } from './Static';
 import { DropResult } from 'react-beautiful-dnd';
-import React from 'react';
 import { reorder } from './helpers';
 import DraggableList from './DraggableList';
 
@@ -133,7 +132,7 @@ const QuizQuestionsPage = (): JSX.Element => {
   if (questionsError) return <p>Error: {questionsError.message}</p>;
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" style={{marginTop: '20px',marginBottom: '20px' }}>
       {questionsData?.findFullQuestions.map((question) => (
         <Paper key={question.id} style={{ padding: '20px', marginBottom: '20px' }}>
           <Typography variant="h6">{question.question_content}</Typography>

@@ -12,11 +12,12 @@ import { Container,
          TextField, 
          Button } from '@material-ui/core';
 import { useApolloClient } from '@apollo/client';
-import { useParams } from 'react-router-dom';
+import { useParams} from 'react-router-dom';
 import { FIND_FULL_QUESTIONS, CHECK_ANSWERS } from './Static';
 import { DropResult } from 'react-beautiful-dnd';
 import { reorder } from './helpers';
 import DraggableList from './DraggableList';
+import { useNavigate } from 'react-router-dom';
 
 interface Answer {
   id: number;
@@ -29,6 +30,13 @@ interface Question {
   question_type: string;
   question_content: string;
   answers: Answer[];
+}
+
+interface Result {
+  quiz_id: number
+  questions: ResultQuestions []
+  result: number
+  maxResult: number
 }
 
 interface ResultQuestions{
@@ -45,6 +53,7 @@ interface FindFullQuestionsQuery {
 
 const QuizQuestionsPage = (): JSX.Element => {
   const client = useApolloClient();
+  const navigate = useNavigate();
   const { quizId } = useParams<{ quizId?: string }>(); 
   const { 
     loading: questionsLoading,
@@ -93,6 +102,7 @@ const QuizQuestionsPage = (): JSX.Element => {
   };
 
   const SubmitAnswers = async () => {
+
     const formattedAnswers = Object.keys(answers).map((questionId) => {
       const answer = answers[parseInt(questionId)];
       if (answer[0].textAnswer === false) {
@@ -104,13 +114,12 @@ const QuizQuestionsPage = (): JSX.Element => {
 
     try {
       const temp = { quizId: parseInt(quizId || "0"), answers: formattedAnswers};
-      console.log(JSON.stringify(temp)); 
       const { data } = await client.query({
         query: CHECK_ANSWERS,
         variables: temp
       });
 
-      console.log(JSON.stringify(data)); 
+      navigate(`/quizResult/${quizId}`, { state: { result: data.checkAnswers.result, maxResult: data.checkAnswers.maxResult, questions: data.checkAnswers.questions }});
     } catch (error) {
       console.error("Error submitting answers:", error);
     }

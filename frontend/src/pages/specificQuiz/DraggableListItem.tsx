@@ -1,9 +1,7 @@
-import * as React from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-
 import { Item } from './typings';
 
 const useStyles = makeStyles({

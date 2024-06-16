@@ -34,4 +34,24 @@ query CheckAnswers($quizId: Int!, $answers: [checkQuestionInput!]!) {
 }
 `;
 
-export { FIND_FULL_QUESTIONS, CHECK_ANSWERS };
+const CREATE_QUIZ = gql`
+mutation CreateQuiz($createQuizInput: CreateQuizInput!) {
+  createQuiz(createQuizInput: $createQuizInput) {
+    id
+    title
+    questions {
+      id
+      question_type
+      question_content
+      answers {
+        id
+        answer_content
+        priority
+        is_correct
+      }
+    }
+  }
+}
+`;
+
+export { FIND_FULL_QUESTIONS, CHECK_ANSWERS, CREATE_QUIZ };

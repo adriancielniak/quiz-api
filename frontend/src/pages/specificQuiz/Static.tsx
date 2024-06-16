@@ -25,6 +25,8 @@ query CheckAnswers($quizId: Int!, $answers: [checkQuestionInput!]!) {
       question_type
       correct_answer_ids
       correct_text_answer
+      student_answer_ids
+      student_text_answer
     }
     result
     maxResult 

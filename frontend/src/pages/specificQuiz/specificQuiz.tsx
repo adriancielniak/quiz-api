@@ -119,7 +119,15 @@ const QuizQuestionsPage = (): JSX.Element => {
         variables: temp
       });
 
-      navigate(`/quizResult/${quizId}`, { state: { result: data.checkAnswers.result, maxResult: data.checkAnswers.maxResult, questions: data.checkAnswers.questions }});
+      navigate(
+        `/quizResult/${quizId}`,
+          { state: { 
+            result: data.checkAnswers.result,
+            maxResult: data.checkAnswers.maxResult, 
+            questions: data.checkAnswers.questions, 
+            answers: questionsData,
+            quiz_id: parseInt(quizId || "0") }
+          });
     } catch (error) {
       console.error("Error submitting answers:", error);
     }

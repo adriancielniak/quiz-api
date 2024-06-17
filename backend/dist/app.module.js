@@ -28,10 +28,10 @@ exports.AppModule = AppModule = __decorate([
             typeorm_1.TypeOrmModule.forRoot({
                 keepConnectionAlive: true,
                 type: 'postgres',
-                port: 5433,
+                port: 5436,
                 username: 'postgres',
                 password: '12345',
-                database: 'postgres',
+                database: 'quiz',
                 autoLoadEntities: true,
                 synchronize: false,
             }),

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, TextField, MenuItem, Select, FormControl, InputLabel, Checkbox, FormControlLabel, List, ListItem, IconButton, Container, Typography, Paper } from '@material-ui/core';
+import { Button, TextField, MenuItem, Select, FormControl, InputLabel, Checkbox, FormControlLabel, List, ListItem, IconButton, Container, Typography, Paper, Box } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { gql, useMutation } from '@apollo/client';
 
@@ -148,9 +148,11 @@ const TeacherPage = () => {
 
         {(questionType === 'TYPE_1' || questionType === 'TYPE_2') && (
           <div>
-            <Button variant="contained" color="primary" onClick={handleAddAnswer} style={{ marginBottom: '10px' }}>
-              Add Answer
-            </Button>
+            <Box display="flex" justifyContent="center" marginBottom="10px">
+              <Button variant="contained" color="primary" onClick={handleAddAnswer}>
+                Add Answer
+              </Button>
+            </Box>
             <List>
               {answers.map((answer, index) => (
                 <ListItem key={index}>
@@ -181,9 +183,11 @@ const TeacherPage = () => {
 
         {questionType === 'TYPE_3' && (
           <div>
-            <Button variant="contained" color="primary" onClick={handleAddAnswer} style={{ marginBottom: '10px' }}>
-              Add Answer
-            </Button>
+            <Box display="flex" justifyContent="center" marginBottom="10px">
+              <Button variant="contained" color="primary" onClick={handleAddAnswer}>
+                Add Answer
+              </Button>
+            </Box>
             <List>
               {answers.map((answer, index) => (
                 <ListItem key={index}>
@@ -221,15 +225,16 @@ const TeacherPage = () => {
           />
         )}
 
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleAddQuestion}
-          disabled={!questionContent}
-          style={{ marginTop: '20px' }}
-        >
-          Add Question
-        </Button>
+        <Box display="flex" justifyContent="center" marginTop="20px">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleAddQuestion}
+            disabled={!questionContent}
+          >
+            Add Question
+          </Button>
+        </Box>
 
         <Typography variant="h5" style={{ marginTop: '20px' }}>
           Current Questions
@@ -252,15 +257,16 @@ const TeacherPage = () => {
           ))}
         </List>
 
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleSubmitQuiz}
-          disabled={!quizTitle || questions.length === 0}
-          style={{ marginTop: '20px' }}
-        >
-          Submit Quiz
-        </Button>
+        <Box display="flex" justifyContent="center" marginTop="20px">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleSubmitQuiz}
+            disabled={!quizTitle || questions.length === 0}
+          >
+            Submit Quiz
+          </Button>
+        </Box>
       </Paper>
     </Container>
   );

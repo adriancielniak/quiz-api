@@ -7,11 +7,11 @@ function Navbar(){
                 QuizApp
             </a>
             <ul>
-                <li>
-                    <a href="/student">Student</a>
+                <li className="mr-4">
+                    <a href="/student">All Quizzes</a>
                 </li>
                 <li>
-                    <a href="/teacher">Teacher</a>
+                    <a href="/teacher">Create Quiz</a>
                 </li>
             </ul>
         </nav>
